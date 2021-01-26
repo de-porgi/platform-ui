@@ -5,6 +5,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AragonApi } from '@aragon/api-react'
 import App from './App'
+import { WalletProvider } from './wallet'
 
 const reducer = state => {
   if (state === null) {
@@ -14,8 +15,10 @@ const reducer = state => {
 }
 
 ReactDOM.render(
-  <AragonApi reducer={reducer}>
-    <App />
-  </AragonApi>,
+  <WalletProvider>
+    <AragonApi reducer={reducer}>
+      <App />
+    </AragonApi>
+  </WalletProvider>,
   document.getElementById('root')
 )
