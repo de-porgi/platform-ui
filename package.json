@@ -9,7 +9,7 @@
   "dependencies": {
     "@aragon/api": "^2.0.0",
     "@aragon/api-react": "^2.0.0",
-    "@aragon/ui": "^1.7.0",
+    "@aragon/ui": "1.5.0",
     "aragon": "^0.0.1",
     "bn.js": "^4.11.6",
     "core-js": "^3.8.3",
