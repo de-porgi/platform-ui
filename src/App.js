@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
-import { Main, Header, Button, Tabs } from '@aragon/ui'
-import ApplicationForm from './components/ApplicationForm'
+import { Main, Header, Button } from '@aragon/ui'
+import CompanyForm from './components/ApplicationForm/CompanyForm'
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
               PORGI
             </Route>
             <Route path="/form">
-              <ApplicationForm />
+              <CompanyForm />
             </Route>
           </Switch>
         </div>
