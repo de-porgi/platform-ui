@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Field, GU, Header, DropDown, Main, TextInput } from '@aragon/ui'
 
 // Company name
@@ -9,6 +9,7 @@ import { Box, Field, GU, Header, DropDown, Main, TextInput } from '@aragon/ui'
 // Buttton to next forma
 
 function CompanyForm() {
+  const [selected, setSelected] = useState()
   return (
     <Main>
       <Header primary="Idea Application Form" />
@@ -35,8 +36,8 @@ function CompanyForm() {
         <Field label="Category">
           <DropDown
             items={['Arts', 'Design & Tech', 'Music', 'Food & Crafts']}
-            // selected={selected}
-            // onChange={setSelected}
+            selected={selected}
+            onChange={setSelected}
           />
         </Field>
       </Box>

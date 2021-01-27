@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
 import { Main, Header, Button } from '@aragon/ui'
 import CompanyForm from './components/ApplicationForm/CompanyForm'
+import DevelopmentForm from './components/ApplicationForm/DevelopmentForm'
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
               <Link to="/">Active projects</Link>
             </li>
             <li>
-              <Link to="/le">Pre-sale projects</Link>
+              {/* for dev purposes only! */}
+              <Link to="/dev">Development Form</Link>
             </li>
           </ul>
           <Switch>
@@ -30,6 +32,9 @@ function App() {
             </Route>
             <Route path="/form">
               <CompanyForm />
+            </Route>
+            <Route path="/dev">
+              <DevelopmentForm />
             </Route>
           </Switch>
         </div>
