@@ -1,5 +1,5 @@
 import { SmartContract } from './SmartContract'
-import { votingAbi } from '../abi/abis'
+import { votingAbi } from '../abi/voting'
 
 export class VotingContract extends SmartContract {
   constructor(address) {

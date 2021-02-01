@@ -1,5 +1,5 @@
 import { SmartContract } from './SmartContract'
-import { porgiABI } from '../abi/abis'
+import { porgiABI } from '../abi/porgi'
 
 export class PorgiContract extends SmartContract {
   constructor(address) {

@@ -1,5 +1,5 @@
 import { SmartContract } from './SmartContract'
-import { projectABI } from '../abi/abis'
+import { projectABI } from '../abi/project'
 
 export class ProjectContract extends SmartContract {
   constructor(address) {
