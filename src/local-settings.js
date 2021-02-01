@@ -91,10 +91,6 @@ function setLocalSetting(confKey, value) {
   return window.localStorage.setItem(confVar.storageKey, value)
 }
 
-export function getAppLocator() {
-  return getLocalSetting(APP_LOCATOR) || ''
-}
-
 export function getLocalChainId() {
   // Default to 1337 as used by most local development environments.
   return getLocalSetting(LOCAL_CHAIN_ID) || 1337
@@ -115,7 +111,7 @@ export function getEnsRegistryAddress() {
 }
 
 export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
+  return getLocalSetting(ETH_NETWORK_TYPE) || 'kovan'
 }
 
 export function getEthSubscriptionEventDelay() {
@@ -155,26 +151,6 @@ export function getLastPackageVersion() {
 
 export function setPackageVersion(version) {
   return setLocalSetting(PACKAGE_VERSION, version)
-}
-
-export function getClientTheme() {
-  const storedClientTheme = getLocalStorageSetting(CLIENT_THEME)
-  if (storedClientTheme) {
-    try {
-      return JSON.parse(storedClientTheme)
-    } catch (err) {}
-  }
-  return {
-    // To be replaced by an “auto” state
-    appearance: window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light',
-    theme: null,
-  }
-}
-
-export function setClientTheme(appearance, theme = null) {
-  return setLocalSetting(CLIENT_THEME, JSON.stringify({ appearance, theme }))
 }
 
 export function getPortisDappId() {

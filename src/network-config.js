@@ -32,6 +32,28 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
+  kovan: {
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    nodes: {
+      defaultEth: 'wss://mainnet.eth.aragon.network/ws',
+    },
+    settings: {
+      chainId: 1,
+      name: 'Mainnet',
+      shortName: 'Mainnet',
+      type: 'main', // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
+  },
   rinkeby: {
     addresses: {
       ensRegistry:
