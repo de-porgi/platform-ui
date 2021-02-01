@@ -15,9 +15,7 @@ export class ProjectContract extends SmartContract {
   }
 
   getBalanceOfAt(owner, blockNumber) {
-    return this.call(
-      this.contract.methods.balanceOfAt(owner, blockNumber)
-    )
+    return this.call(this.contract.methods.balanceOfAt(owner, blockNumber))
   }
 
   getController() {
@@ -90,5 +88,89 @@ export class ProjectContract extends SmartContract {
 
   getVersion() {
     return this.call(this.contract.methods.version())
+  }
+
+  approve(spender, amount) {
+    return this.send(this.contract.methods.approve(spender, amount))
+  }
+
+  approveAndCall(spender, amount, extraData) {
+    return this.send(
+      this.contract.methods.approveAndCall(spender, amount, extraData)
+    )
+  }
+
+  changeController(newController) {
+    return this.send(this.contract.methods.changeController(newController))
+  }
+
+  createCloneToken(
+    cloneTokenName,
+    cloneDecimalUnits,
+    cloneTokenSymbol,
+    snapshotBlock,
+    transfersEnabled
+  ) {
+    return this.send(
+      this.contract.methods.createCloneToken(
+        cloneTokenName,
+        cloneDecimalUnits,
+        cloneTokenSymbol,
+        snapshotBlock,
+        transfersEnabled
+      )
+    )
+  }
+
+  decreaseAllowance(spender, subtractedValue) {
+    return this.send(
+      this.contract.methods.decreaseAllowance(spender, subtractedValue)
+    )
+  }
+
+  destroyTokens(owner, amount) {
+    return this.send(this.contract.methods.destroyTokens(owner, amount))
+  }
+
+  enableTransfers(transfersEnabled) {
+    return this.send(this.contract.methods.enableTransfers(transfersEnabled))
+  }
+
+  finishPresale() {
+    return this.send(this.contract.methods.FinishPresale())
+  }
+
+  finishSeries(result) {
+    return this.send(this.contract.methods.FinishSeries(result))
+  }
+
+  generateTokens(owner, amount) {
+    return this.send(this.contract.methods.generateTokens(owner, amount))
+  }
+
+  increaseAllowance(spender, addedValue) {
+    return this.send(
+      this.contract.methods.increaseAllowance(spender, addedValue)
+    )
+  }
+
+  startNextSeason() {
+    return this.send(this.contract.methods.StartNextSeason())
+  }
+
+  startPresale() {
+    return this.send(this.contract.methods.StartPresale())
+  }
+
+  transfer(to, amount) {
+    return this.send(this.contract.methods.transfer(to, amount))
+  }
+
+  transferFrom(from, to, amount) {
+    return this.send(this.contract.methods.transferFrom(from, to, amount))
+  }
+
+  withdrawETH() {
+    return this.send(this.contract.methods.WithdrawETH())
   }
 }

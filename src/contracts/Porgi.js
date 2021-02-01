@@ -1,6 +1,16 @@
 import { SmartContract } from './SmartContract'
 import { porgiABI } from '../abi/porgi'
 
+// eslint-disable-next-line no-unused-vars
+const ProjectState = {
+  None: 0,
+  New: 1,
+  Presale: 2,
+  InProgress: 3,
+  Finished: 4,
+  Canceled: 5,
+}
+
 export class PorgiContract extends SmartContract {
   constructor(address) {
     super(address, porgiABI)
@@ -36,5 +46,13 @@ export class PorgiContract extends SmartContract {
 
   getVotingFactory() {
     return this.call(this.contract.methods.VotingFactory())
+  }
+
+  addProject(tuple) {
+    return this.send(this.contract.methods.AddProject(tuple))
+  }
+
+  changeState(state) {
+    return this.send(this.contract.methods.ChangeState(state))
   }
 }
