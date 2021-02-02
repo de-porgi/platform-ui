@@ -4,11 +4,11 @@ import { Spring, animated } from 'react-spring'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import AccountModule from './components/AccountModule/AccountModule'
-import { Landing } from './routes/Landing'
-import { Projects } from './routes/Projects'
-import { NewProject } from './routes/NewProject'
-import { Account } from './routes/Account'
-import { Project } from './routes/Project'
+import Landing from './routes/Landing'
+import Projects from './routes/Projects'
+import NewProject from './routes/NewProject'
+import Account from './routes/Account'
+import Project from './routes/Project'
 
 const Router = BrowserRouter
 
