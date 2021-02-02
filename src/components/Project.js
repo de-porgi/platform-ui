@@ -15,7 +15,16 @@ export class Project extends React.Component {
       state: 'Loading...',
       symbol: 'Loading...',
       parentToken: 'Loading...',
+      controller: 'Loading...',
+      activeVoting: 'Loading...',
+      ethBalance: 'Loading...',
+      seasons: 'Loading...',
+      totalSupply: 'Loading...',
+      transfersEnabled: 'Loading...',
+      version: 'Loading...',
     }
+
+    this.updateState = this.updateState.bind(this)
   }
 
   componentDidMount() {
@@ -39,16 +48,49 @@ export class Project extends React.Component {
       this.setState({ owner: res })
     })
 
-    this.project.getState().then(res => {
-      this.setState({ state: res })
-    })
-
     this.project.getSymbol().then(res => {
       this.setState({ symbol: res })
     })
 
     this.project.getParentToken().then(res => {
       this.setState({ parentToken: res })
+    })
+
+    this.project.getController().then(res => {
+      this.setState({ controller: res })
+    })
+
+    this.project.getActiveVoting().then(res => {
+      this.setState({ activeVoting: res })
+    })
+
+    this.project.getSeasons().then(res => {
+      this.setState({ seasons: res })
+    })
+
+    this.project.getTotalSupply().then(res => {
+      this.setState({ totalSupply: res })
+    })
+
+    this.project.isTransfersEnabled().then(res => {
+      if (res === true) {
+        this.setState({ transfersEnabled: 'enabled' })
+        return
+      }
+
+      this.setState({ transfersEnabled: 'disabled' })
+    })
+
+    this.project.getVersion().then(res => {
+      this.setState({ version: res })
+    })
+
+    this.updateState()
+  }
+
+  updateState() {
+    this.project.getState().then(res => {
+      this.setState({ state: res })
     })
   }
 
@@ -77,8 +119,27 @@ export class Project extends React.Component {
           <b>Project Token: </b> {this.state.parentToken}
         </p>
         <p>
+          <b>Current Voting: </b> {this.state.activeVoting}
+        </p>
+        <p>
+          <b>Total Supply: </b> {this.state.totalSupply}
+        </p>
+        <p>
+          <b>Transfers: </b> {this.state.transfersEnabled}
+        </p>
+        <p>
           <b>Creation Block: </b> {this.state.creationBlock}
         </p>
+        <p>
+          <b>Controller: </b> {this.state.controller}
+        </p>
+        <p>
+          <b>Seasons: </b> {this.state.seasons}
+        </p>
+        <p>
+          <b>Version: </b> {this.state.version}
+        </p>
+        <button onClick={this.updateState}>Update State</button>
       </div>
     )
   }
