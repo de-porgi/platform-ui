@@ -12,7 +12,7 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network, web3Providers } from '../../environment'
+import { defaultConfig } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
@@ -28,7 +28,7 @@ const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 export function useNetworkConnectionData() {
   const { web3: walletWeb3 } = useWallet()
   const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
+  const clientChainId = defaultConfig.chainId
 
   useEffect(() => {
     if (!walletWeb3) {
@@ -76,7 +76,7 @@ export function useWalletConnectionDetails(
     connectionColor: theme.positive,
   }
 
-  if (clientListening && !network.live) {
+  if (clientListening && !defaultConfig.live) {
     return defaultOkConnectionDetails
   }
 
@@ -116,7 +116,7 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = getWeb3(web3Providers.default)
+  const clientWeb3 = getWeb3(defaultConfig.web3Provider)
   const walletWeb3 = wallet.web3
   const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
 
@@ -225,7 +225,7 @@ export function useSyncState(
     status: STATUS_CONNECTION_OK,
   }
 
-  if (clientListening && !network.live) {
+  if (clientListening && !defaultConfig.live) {
     return defaultSyncedStatus
   }
 
