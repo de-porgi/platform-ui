@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
-import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
-import { network } from './environment'
+import { defaultConfig } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 
 const NETWORK_TYPE_DEFAULT = 'private'
@@ -83,10 +82,8 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 export function WalletProvider({ children }) {
   return (
     <UseWalletProvider
-      chainId={network.chainId}
+      chainId={defaultConfig.chainId}
       connectors={{
-        fortmatic: { apiKey: getFortmaticApiKey() },
-        portis: { dAppId: getPortisDappId() },
         provided: { provider: window.cleanEthereum },
       }}
     >
