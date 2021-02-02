@@ -183,7 +183,7 @@ export const projectABI = [
   },
   {
     inputs: [],
-    name: 'CurrentVoting',
+    name: 'ActiveVoting',
     outputs: [
       {
         internalType: 'contract Voting',
@@ -446,7 +446,7 @@ export const projectABI = [
     name: 'State',
     outputs: [
       {
-        internalType: 'enum Project.InnerProjectState',
+        internalType: 'enum Project._ProjectState',
         name: '',
         type: 'uint8',
       },

@@ -26,8 +26,8 @@ export class ProjectContract extends SmartContract {
     return this.call(this.contract.methods.creationBlock())
   }
 
-  getCurrentVoting() {
-    return this.call(this.contract.methods.CurrentVoting())
+  getActiveVoting() {
+    return this.call(this.contract.methods.ActiveVoting())
   }
 
   getDecimals() {
