@@ -2,8 +2,8 @@ import { SmartContract } from './SmartContract'
 import { votingSimpleFactoryABI } from '../abi/votingSimpleFactory'
 
 export class VotingSimpleFactoryContract extends SmartContract {
-  constructor(address) {
-    super(address, votingSimpleFactoryABI)
+  constructor(address, web3) {
+    super(address, web3, votingSimpleFactoryABI)
   }
 
   createVoting(prjAddrs, tuple) {

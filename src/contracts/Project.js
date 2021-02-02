@@ -2,8 +2,8 @@ import { SmartContract } from './SmartContract'
 import { projectABI } from '../abi/project'
 
 export class ProjectContract extends SmartContract {
-  constructor(address) {
-    super(address, projectABI)
+  constructor(address, web3) {
+    super(address, web3, projectABI)
   }
 
   getAllowance(owner, spender) {

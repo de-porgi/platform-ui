@@ -12,8 +12,8 @@ const ProjectState = {
 }
 
 export class PorgiContract extends SmartContract {
-  constructor(address) {
-    super(address, porgiABI)
+  constructor(address, web3) {
+    super(address, web3, porgiABI)
   }
 
   getAaveWETHGateway() {

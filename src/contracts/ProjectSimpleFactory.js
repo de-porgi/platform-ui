@@ -2,8 +2,8 @@ import { SmartContract } from './SmartContract'
 import { projectSimpleFactoryABI } from '../abi/projectSimpleFactory'
 
 export class ProjectSimpleFactoryContract extends SmartContract {
-  constructor(address) {
-    super(address, projectSimpleFactoryABI)
+  constructor(address, web3) {
+    super(address, web3, projectSimpleFactoryABI)
   }
 
   createProject(porgiAddrs, tuple) {
