@@ -1,42 +1,21 @@
 import Web3 from 'web3'
-import {
-  getDefaultEthNode,
-  getEthNetworkType,
-  getIpfsGateway,
-} from './local-settings'
-import { getNetworkConfig } from './network-config'
 
-const networkType = getEthNetworkType()
+const infuraProjectId = 'b5c50e71123d4e36a3e63b4b226a7e09' // TODO: should we hide that?
+const infuraAPI = 'wss://mainnet.infura.io/ws/v3/' + infuraProjectId
 
-export const ipfsDefaultConf = {
-  gateway: getIpfsGateway(),
+export const contractAddress = {
+  aave: '0xf8aC10E65F2073460aAD5f28E1EABE807DC287CF',
 }
 
-const networkConfig = getNetworkConfig(networkType)
-export const network = networkConfig.settings
-export const providers = networkConfig.providers
-
-export const contractAddresses = {
-  ensRegistry: networkConfig.addresses.ensRegistry,
-}
-if (process.env.NODE_ENV !== 'production') {
-  if (Object.values(contractAddresses).some(address => !address)) {
-    // Warn if any contracts are not given addresses in development
-    console.error(
-      'Some contracts are missing addresses in your environment! You most likely need to specify them as environment variables.'
-    )
-    console.error('Current contract address configuration', contractAddresses)
-  }
-  if (network.type === 'unknown') {
-    console.error(
-      'This app was configured to connect to an unsupported network. You most likely need to change your network environment variables.'
-    )
-  }
+export const defaultConfig = {
+  chainId: 42,
+  ipfs: 'https://ipfs.infura.io:5001',
+  eth: infuraAPI,
+  providers: [{ id: 'provided' }],
+  live: true,
+  web3Provider: new Web3.providers.WebsocketProvider(infuraAPI),
 }
 
-export const defaultEthNode =
-  getDefaultEthNode() || networkConfig.nodes.defaultEth
-
-export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider(defaultEthNode),
+export const getNetworkByChainId = () => {
+  return 'kovan'
 }

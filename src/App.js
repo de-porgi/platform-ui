@@ -1,5 +1,5 @@
 import React from 'react'
-import { Main } from '@aragon/ui'
+import { Main, Header } from '@aragon/ui'
 import { Spring, animated } from 'react-spring'
 
 import AccountModule from './components/AccountModule/AccountModule'
@@ -19,8 +19,7 @@ function App() {
             }}
           >
             <Main>
-              <h1>Hello PORGI!</h1>
-              <AccountModule />
+              <Header primary="Hello Porgi" secondary={<AccountModule />} />
             </Main>
           </animated.div>
         </animated.div>

@@ -2,7 +2,7 @@ import {
   STATUS_CONNECTION_ERROR,
   STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
-import { getNetworkByChainId } from '../../network-config'
+import { getNetworkByChainId } from '../../environment'
 
 export const DROPPED_PROVIDER_SYNC_DELAY = 45
 export const MAX_PROVIDER_SYNC_DELAY = 30
@@ -19,8 +19,8 @@ export function getConnectionMessage(
     connectionStatus === STATUS_CONNECTION_ERROR || !listening || !online
       ? 'No connection'
       : connectionStatus === STATUS_CONNECTION_WARNING
-      ? 'Syncing issues'
-      : `Connected to ${clientNetworkName}`
+        ? 'Syncing issues'
+        : `Connected to ${clientNetworkName}`
   return connectionMessage
 }
 
@@ -58,5 +58,5 @@ export function getClientSyncState(
 }
 
 export function normalizeNetworkName(chainId) {
-  return getNetworkByChainId(chainId).settings.shortName
+  return getNetworkByChainId(chainId)
 }

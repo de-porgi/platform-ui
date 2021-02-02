@@ -13161,7 +13161,7 @@ use-token@^0.2.0:
   dependencies:
     js-sha3 "^0.8.0"
 
-use-wallet@^0.7.1:
+use-wallet@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.7.1.tgz#aba6c4a0983ecb01da299a787d2faba636a80365"
   integrity sha512-SQvfPmeoPhrHFEYNL5ciNWg8uLNdn2uawFJqTgS+UOzzbIGhQ4h56Rwk9I2YTx2eT/uE1hOuUPlYJ5uLD9joew==
