@@ -3,19 +3,12 @@ import 'regenerator-runtime/runtime'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AragonApi } from '@aragon/api-react'
 import App from './App'
-
-const reducer = state => {
-  if (state === null) {
-    return { count: 0, isSyncing: true }
-  }
-  return state
-}
+import { WalletProvider } from './wallet'
 
 ReactDOM.render(
-  <AragonApi reducer={reducer}>
+  <WalletProvider>
     <App />
-  </AragonApi>,
+  </WalletProvider>,
   document.getElementById('root')
 )

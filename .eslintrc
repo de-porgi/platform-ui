@@ -32,7 +32,6 @@
           "bracketSpacing": true,
           "jsxBracketSameLine": false
         }
-      ],
-      "linebreak-style": ["error", "unix"]
+      ]
     }
   }
