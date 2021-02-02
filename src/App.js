@@ -12,7 +12,7 @@ import Project from './routes/Project'
 
 const Router = BrowserRouter
 
-function App() {
+const App = () => {
   return (
     <Spring
       from={{ opacity: 0, scale: 0.98 }}

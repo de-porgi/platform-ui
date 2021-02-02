@@ -1,20 +1,16 @@
 import React from 'react'
-import { Box, CardLayout, GU } from '@aragon/ui'
+import { Card } from 'semantic-ui-react'
 
 import ProjectCard from '../components/ProjectCard'
 
-const rowHeight = 294
-const columnWidthMin = 30 * GU
-
 const Projects = () => {
     return (
-        <Box>
-            <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
-                <ProjectCard> HI </ProjectCard>
-                <ProjectCard> HI </ProjectCard>
-                <ProjectCard> HI </ProjectCard>
-            </CardLayout>
-        </Box>
+        <Card.Group itemsPerRow="2">
+            <ProjectCard />
+            <ProjectCard />
+            <ProjectCard />
+            <ProjectCard />
+        </Card.Group>
     )
 }
 

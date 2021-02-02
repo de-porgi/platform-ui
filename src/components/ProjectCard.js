@@ -1,16 +1,20 @@
 import React from 'react'
-import { Card } from '@aragon/ui'
+import { Card, Image } from 'semantic-ui-react'
+import img from '../../public/anus.jpg'
 
-export default ({ children }) => {
+export default () => {
     return (
         <Card>
-            {children}
+            <Image src={img} wrapped ui={false} />
+            <Card.Content>
+                <Card.Header>ProjectName</Card.Header>
+                <Card.Meta>
+                    <span className='date'>Started at 2021</span>
+                </Card.Meta>
+                <Card.Description>
+                    A project that projects other projects in a projected project!
+                </Card.Description>
+            </Card.Content>
         </Card>
     )
 }
-
-
-// // Base icon
-// const IconBase = React.memo(({ src, size, alt = '', ...props }) => (
-//     <img {...props} src={src} width={size} height={size} alt={alt} />
-//   ))
