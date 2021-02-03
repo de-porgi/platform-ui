@@ -2,7 +2,7 @@ import React from 'react'
 import { Card } from 'semantic-ui-react'
 
 import ProjectCard from '../components/ProjectCard'
-import { getProjects } from '../hooks/index'
+import { getProjects } from '../hooks'
 
 const Projects = () => {
   const { projects } = getProjects(1)
