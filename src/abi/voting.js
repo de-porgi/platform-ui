@@ -1,4 +1,4 @@
-export const votingAbi = [
+export default [
   {
     inputs: [
       {
