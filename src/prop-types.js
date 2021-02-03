@@ -1,10 +1,5 @@
 import PropTypes from 'prop-types'
-import Aragon from '@aragon/wrapper'
 import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-  APPS_STATUS_UNLOADED,
   DAO_STATUS_ERROR,
   DAO_STATUS_READY,
   DAO_STATUS_LOADING,
@@ -118,26 +113,6 @@ export const AppInstanceType = PropTypes.shape({
   proxyAddress: EthereumAddressType,
 })
 
-export const AppInstanceGroupType = PropTypes.shape({
-  app: PropTypes.object.isRequired,
-  appId: PropTypes.string.isRequired,
-  instances: PropTypes.arrayOf(AppInstanceType).isRequired,
-
-  // This content may not be available if the app's content couldn't be fetched
-  hasWebApp: PropTypes.bool,
-  name: PropTypes.string,
-  repoName: PropTypes.string,
-})
-
-export const AppsStatusType = PropTypes.oneOf([
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-  APPS_STATUS_UNLOADED,
-])
-
-export const AragonType = PropTypes.instanceOf(Aragon)
-
 export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
   domain: PropTypes.string,
@@ -155,57 +130,11 @@ export const DaoStatusType = PropTypes.oneOf([
   DAO_STATUS_UNLOADED,
 ])
 
-export const FavoriteDaoType = PropTypes.shape({
-  name: PropTypes.string,
-  address: EthereumAddressType,
-  favorited: PropTypes.bool,
-})
-
 export const RenderFnType = PropTypes.oneOfType([
   PropTypes.func,
   PropTypes.oneOf([false]),
 ])
 
-export const RepoContentType = PropTypes.shape({
-  name: PropTypes.string,
-  changelog_url: PropTypes.string,
-  description: PropTypes.string,
-  details_url: PropTypes.string,
-  icons: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string.isRequired,
-      sizes: PropTypes.string.isRequired,
-    })
-  ),
-  screenshots: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string.isRequired,
-    })
-  ),
-})
-
-export const RepoVersionType = PropTypes.shape({
-  content: RepoContentType.isRequired,
-  version: PropTypes.string.isRequired,
-})
-
-export const RepoType = PropTypes.shape({
-  appId: PropTypes.string.isRequired,
-  currentVersion: RepoVersionType,
-  latestVersion: RepoVersionType.isRequired,
-  repoAddress: EthereumAddressType.isRequired,
-  versions: PropTypes.arrayOf(
-    PropTypes.shape({
-      contentURI: PropTypes.string.isRequired,
-      contractAddress: PropTypes.string.isRequired,
-      timestamp: PropTypes.number,
-      version: PropTypes.string.isRequired,
-      versionId: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-})
-
-export const ReposListType = PropTypes.arrayOf(RepoType)
 
 // https://github.com/react-spring/react-spring/blob/31200a79843ce85200b2a7692e8f14788e60f9e9/types/renderprops-universal.d.ts#L133
 export const ReactSpringStateType = PropTypes.oneOf([
@@ -221,31 +150,6 @@ export const EthereumProviderType = PropTypes.shape({
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   strings: PropTypes.object.isRequired,
-})
-
-// see templates/
-const OrgTemplateAppType = PropTypes.shape({
-  appName: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-})
-export const OrgTemplateType = PropTypes.shape({
-  apps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
-  caseStudyUrl: PropTypes.string,
-  description: PropTypes.string.isRequired,
-  disabled: PropTypes.bool,
-  header: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  longDesc: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  optionalApps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
-  prepareTransactions: PropTypes.func,
-  registry: PropTypes.string,
-  screens: PropTypes.arrayOf(
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
-  ),
-  sourceCodeUrl: PropTypes.string,
-  userGuideUrl: PropTypes.string,
 })
 
 // The status of a single transaction (only used to deploy an org for now).
@@ -269,19 +173,4 @@ export const WalletType = PropTypes.shape({
   networkType: PropTypes.string.isRequired,
   providerInfo: PropTypes.object.isRequired,
   web3: PropTypes.object.isRequired,
-})
-
-export const AragonUiAppearanceType = PropTypes.oneOf(['dark', 'light'])
-
-export const AragonUiThemeType = PropTypes.oneOf([
-  PropTypes.string,
-  PropTypes.shape({
-    _name: PropTypes.string.isRequired,
-    _appearance: AragonUiAppearanceType.isRequired,
-  }),
-])
-
-export const ClientThemeType = PropTypes.shape({
-  theme: AragonUiThemeType,
-  appearance: AragonUiAppearanceType.isRequired,
 })
