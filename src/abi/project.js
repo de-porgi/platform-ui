@@ -1,4 +1,4 @@
-export const projectABI = [
+export default [
   {
     inputs: [
       {

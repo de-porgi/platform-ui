@@ -1,4 +1,4 @@
-export const porgiABI = [
+export default [
   {
     inputs: [
       {
