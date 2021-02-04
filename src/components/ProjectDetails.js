@@ -1,6 +1,9 @@
 import React from 'react'
 import { Container, Header, Table, Button, Input } from 'semantic-ui-react'
 import { getProjectBaseInfo, getProjectField } from '../hooks'
+import { getWeb3 } from '../web3-utils'
+import ProjectABI from '../abi/project'
+import { defaultConfig } from '../environment'
 
 const ProjectDetails = (props) => {
   const { baseInfo, loading } = getProjectBaseInfo(props.address)
@@ -23,13 +26,18 @@ const ProjectDetails = (props) => {
     return val
   }
 
-  let weiCount = 1000000
+  let weiCount = 300000000000000
+  // TODO it works, but require refines
   function invest() {
-    // TODO not working code
-    // const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
-    // const contract = new web3.eth.Contract(ProjectABI, props.address)
-    // const wallet = useWallet()
-    // return contract.methods.Invest().send({from: wallet.AddressField})
+    const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
+    const contract = new web3.eth.Contract(ProjectABI, props.address)
+
+    web3.eth.sendTransaction({
+      to: props.address,
+      from: window.ethereum.selectedAddress,
+      value: weiCount.toString(),
+      data: contract.methods.Invest().encodeABI()
+    })
   }
 
   function handleCount(e) {
