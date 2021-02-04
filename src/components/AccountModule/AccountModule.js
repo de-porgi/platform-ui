@@ -125,6 +125,7 @@ function AccountModule() {
         display: flex;
         align-items: center;
         height: 100%;
+        float: right;
       `}
     >
       {screenId === 'connected' ? (

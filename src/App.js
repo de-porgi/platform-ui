@@ -1,8 +1,10 @@
 import React from 'react'
-import { Main, Header } from '@aragon/ui'
+import { Main } from '@aragon/ui'
+import { Button, Segment, Menu } from 'semantic-ui-react'
 import { Spring, animated } from 'react-spring'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 
+import Logo from './components/Logo'
 import AccountModule from './components/AccountModule/AccountModule'
 import Landing from './routes/Landing'
 import Projects from './routes/Projects'
@@ -26,9 +28,28 @@ const App = () => {
               transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
             }}
           >
-            <Main>
-              <Header primary="Hello Porgi" secondary={<AccountModule />} />
-              <Router>
+            <Router>
+              <Main layout={false}>
+                <Segment textAlign="center" clearing>
+                  <Menu floated secondary>
+                    <Menu.Item fitted>
+                      <Link to="/">
+                        <Logo />
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item fitted>
+                      <Button floated="left" color="blue" basic as={Link} to="/new">
+                        Create Project
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Link to="/account">
+                        Account
+                      </Link>
+                    </Menu.Item>
+                  </Menu>
+                  <AccountModule />
+                </Segment>
                 <Switch>
                   <Route exact path="/" component={Landing} />
                   <Route path="/projects" component={Projects} />
@@ -36,8 +57,8 @@ const App = () => {
                   <Route path="/account" component={Account} />
                   <Route path="/project/:project" component={Project} />
                 </Switch>
-              </Router>
-            </Main>
+              </Main>
+            </Router>
           </animated.div>
         </animated.div>
       )}
