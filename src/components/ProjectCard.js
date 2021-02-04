@@ -7,7 +7,7 @@ import img from '../../public/anus.jpg'
 const ProjectCard = ({ address }) => {
   return (
     <Card>
-      <Image src={img} wrapped ui={false} />
+      <Image href={`/project/${address}`} as='a' src={img} wrapped ui={false} />
       <Card.Content>
         <Card.Header>ProjectName</Card.Header>
         <Card.Meta>

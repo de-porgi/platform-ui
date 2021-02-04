@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { contractAddresses, defaultConfig } from '../environment'
 import PorgiABI from '../abi/porgi'
+import ProjectABI from '../abi/project'
 import { getWeb3 } from '../web3-utils'
 
 export const getProjects = state => {
@@ -11,6 +12,18 @@ export const getProjects = state => {
 
   return {
     projects: res.data || [],
+    error: res.error,
+  }
+}
+
+export const getProjectField = (address, field, ...args) => {
+  const res = useSWR(
+    [address, field, ...args],
+    contractFetcher(ProjectABI)
+  )
+
+  return {
+    val: res.data || (!res.error && "Loading...") || "Error",
     error: res.error,
   }
 }

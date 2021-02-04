@@ -1,65 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Container, Header, Table, Button } from 'semantic-ui-react'
-import { useParams } from 'react-router-dom'
-import { projectABI } from '../abi/project'
-import { defaultConfig } from '../environment'
+import { getProjectField } from '../hooks'
 
-const ProjectDetails = () => {
-  const { address } = useParams()
-  // TODO is it right?
-  const web3 = defaultConfig.web3Provider
-  const project = new web3.eth.Contract(projectABI, address)
+const ProjectDetails = (props) => {
+  const projectName = loadFiled("ProjectName")
+  const owner = loadFiled("Owner")
+  const name = loadFiled("name")
+  const state = loadFiled("State")
+  const creationBlock = loadFiled("creationBlock")
+  const activeVoting = loadFiled("ActiveVoting")
 
-  const [projectName, setProjectName] = useState('Project')
-  const [name, setName] = useState('name')
-  const [owner, setOwner] = useState(
-    '0x0000000000000000000000000000000000000000'
-  )
-  const [state, setState] = useState('0')
-  const [symbol, setSymbol] = useState('TOKEN_PRG')
-  const [creationBlock, setCreationBlock] = useState('0')
-  const [activeVoting, setActiveVoting] = useState(
-    '0x0000000000000000000000000000000000000000'
-  )
-  const [totalSupply, setTotalSupply] = useState('100000')
-  const [transfers, srtTransfers] = useState('enabled')
-  const [decimals, setDecimals] = useState('18')
+  const symbol = loadFiled("symbol")
+  const totalSupply = loadFiled("totalSupply")
+  const decimals = loadFiled("decimals")
+  const transfersEnabled = loadFiled("transfersEnabled")
 
-  function fetch(setter, meth) {
-    meth
-      .call()
-      .then(res => setter(res))
-      .catch(err => {
-        console.log(err)
-        setter('Error')
-      })
+  function loadFiled(field) {
+    const { val } = getProjectField(props.address, field)
+    return val
   }
-
-  useEffect(() => {
-    if (!web3) {
-      return
-    }
-
-    fetch(setProjectName, project.methods.ProjectName())
-    fetch(setName, project.methods.name())
-    fetch(setOwner, project.methods.Owner())
-    fetch(setState, project.methods.State())
-    fetch(setSymbol, project.methods.symbol())
-    fetch(setCreationBlock, project.methods.creationBlock())
-    fetch(setActiveVoting, project.methods.ActiveVoting())
-    fetch(setTotalSupply, project.methods.totalSupply())
-    fetch(setDecimals, project.methods.decimals())
-    project.methods
-      .transfersEnabled()
-      .call()
-      .then(res => {
-        res ? srtTransfers('true') : srtTransfers('false')
-      })
-      .catch(err => {
-        console.log(err)
-        srtTransfers('Error')
-      })
-  }, [state])
 
   return (
     <Container>
@@ -116,7 +75,7 @@ const ProjectDetails = () => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>Transfers</Table.Cell>
-            <Table.Cell>{transfers}</Table.Cell>
+            <Table.Cell>{transfersEnabled ? "enabled" : "disabled"}</Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>
