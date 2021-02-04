@@ -28,6 +28,19 @@ export const getProjectField = (address, field, ...args) => {
   }
 }
 
+export const getProjectBaseInfo = (address) => {
+  const res = useSWR(
+    [address, "GetProjectBaseInfo"],
+    contractFetcher(ProjectABI)
+  )
+
+  return {
+    baseInfo: res.data || [],
+    error: res.error,
+    loading: !res.error && !res.data
+  }
+}
+
 export const contractFetcher = abi => (...args) => {
   const [arg1, arg2, ...params] = args
   const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
