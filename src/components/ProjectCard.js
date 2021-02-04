@@ -4,6 +4,7 @@ import { Card, Image } from 'semantic-ui-react'
 import { EthereumAddressType } from '../prop-types'
 import img from '../../public/anus.jpg'
 
+// TODO Add placeholder
 const ProjectCard = ({ address }) => {
   return (
     <Card>

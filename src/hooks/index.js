@@ -4,14 +4,15 @@ import PorgiABI from '../abi/porgi'
 import { getWeb3 } from '../web3-utils'
 
 export const getProjects = state => {
-  const res = useSWR(
+  const { data, error } = useSWR(
     [contractAddresses.porgi, 'GetProjectsBy', state],
     contractFetcher(PorgiABI)
   )
 
   return {
-    projects: res.data || [],
-    error: res.error,
+    projects: data || [],
+    loading: !error && !data,
+    error: error,
   }
 }
 
