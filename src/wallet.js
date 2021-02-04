@@ -84,7 +84,7 @@ export function WalletProvider({ children }) {
     <UseWalletProvider
       chainId={defaultConfig.chainId}
       connectors={{
-        provided: { provider: window.cleanEthereum },
+        provided: { provider: window.ethereum },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

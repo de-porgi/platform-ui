@@ -1,8 +1,3 @@
-export const APPS_STATUS_ERROR = Symbol('APPS_STATUS_ERROR')
-export const APPS_STATUS_READY = Symbol('APPS_STATUS_READY')
-export const APPS_STATUS_LOADING = Symbol('APPS_STATUS_LOADING')
-export const APPS_STATUS_UNLOADED = Symbol('APPS_STATUS_UNLOADED')
-
 export const DAO_STATUS_ERROR = Symbol('DAO_STATUS_ERROR')
 export const DAO_STATUS_READY = Symbol('DAO_STATUS_READY')
 export const DAO_STATUS_LOADING = Symbol('DAO_STATUS_LOADING')
