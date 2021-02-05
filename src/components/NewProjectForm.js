@@ -19,7 +19,7 @@ const NewProjectForm = () => {
   const { input: symbol } = useInput("Hate Google")
 
   const { input: decimals } = useInput(18)
-  const { input: price } = useInput(1000000000)
+  const { input: price } = useInput("100000000000000000000")
   const { input: distribution } = useInput(20)
   const { input: presaleDuration } = useInput(100)
 
