@@ -6,7 +6,7 @@ import { getWeb3 } from '../web3-utils'
 export const getProjects = state => {
   const { data, error } = useSWR(
     [contractAddresses.porgi, 'GetProjectsBy', state],
-    contractFetcher(PorgiABI)
+    contractCaller(PorgiABI)
   )
 
   return {
@@ -16,9 +16,17 @@ export const getProjects = state => {
   }
 }
 
-export const contractFetcher = abi => (...args) => {
-  const [arg1, arg2, ...params] = args
+export const newProject = (web3, from, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', from, props)
+
+const contractCaller = abi => (...args) => {
+  const [address, meth, ...params] = args
   const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
-  const contract = new web3.eth.Contract(abi, arg1)
-  return contract.methods[arg2](...params).call()
+  const contract = new web3.eth.Contract(abi, address)
+  return contract.methods[meth](...params).call()
+}
+
+const contractSender = (web3, abi) => (...args) => {
+  const [address, meth, from, ...params] = args
+  const contract = new web3.eth.Contract(abi, address)
+  return contract.methods[meth](...params).send({ from: from, gasLimit: "21000" })
 }
