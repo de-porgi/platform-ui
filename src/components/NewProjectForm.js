@@ -12,7 +12,7 @@ import { newProject } from '../hooks'
 
 // TODO Add additional explanation for each field
 const NewProjectForm = () => {
-  const { web3, account } = useWallet()
+  const { web3 } = useWallet()
 
   const { input: name } = useInput("Hate Google")
   const { input: token } = useInput("Hate Google")
@@ -60,7 +60,7 @@ const NewProjectForm = () => {
       }],
     }
 
-    const res = await newProject(web3, account, project)
+    const res = await newProject(web3, project)
     console.log(res)
   }
 

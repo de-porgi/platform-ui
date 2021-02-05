@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { contractAddresses, defaultConfig } from '../environment'
 import PorgiABI from '../abi/porgi'
-import { getWeb3 } from '../web3-utils'
+import { getMainAccount, getWeb3 } from '../web3-utils'
 
 export const getProjects = state => {
   const { data, error } = useSWR(
@@ -16,7 +16,7 @@ export const getProjects = state => {
   }
 }
 
-export const newProject = (web3, from, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', from, props)
+export const newProject = (web3, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', props)
 
 const contractCaller = abi => (...args) => {
   const [address, meth, ...params] = args
@@ -25,8 +25,9 @@ const contractCaller = abi => (...args) => {
   return contract.methods[meth](...params).call()
 }
 
-const contractSender = (web3, abi) => (...args) => {
-  const [address, meth, from, ...params] = args
+const contractSender = (web3, abi) => async (...args) => {
+  const [address, meth, ...params] = args
   const contract = new web3.eth.Contract(abi, address)
-  return contract.methods[meth](...params).send({ from: from, gasLimit: "21000" })
+  const from = await getMainAccount(web3)
+  return contract.methods[meth](...params).send({ from: from })
 }
