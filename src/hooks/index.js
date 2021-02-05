@@ -29,7 +29,7 @@ export const getProjectField = (address, field, ...args) => {
   }
 }
 
-export const getProjectBaseInfo = (address) => {
+export const getProjectBaseInfo = address => {
   const res = useSWR(
     [address, "GetProjectBaseInfo"],
     contractCaller(ProjectABI)
@@ -37,16 +37,16 @@ export const getProjectBaseInfo = (address) => {
 
   return {
     baseProjectInfo: (!res.error && res.data &&
-      {
-        owner: res.data[0],
-        projectName: res.data[1],
-        name: res.data[2],
-        symbol: res.data[3],
-        decimals: res.data[4],
-        activeSeason: res.data[5],
-        index: res.data[6]["Index"],
-        state: res.data[6]["State"]
-      }
+    {
+      owner: res.data[0],
+      projectName: res.data[1],
+      name: res.data[2],
+      symbol: res.data[3],
+      decimals: res.data[4],
+      activeSeason: res.data[5],
+      index: res.data[6]["Index"],
+      state: res.data[6]["State"]
+    }
     ) || [],
     error: res.error,
     loading: !res.error && !res.data

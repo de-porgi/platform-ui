@@ -42,11 +42,11 @@ const App = () => {
                         Create Project
                       </Button>
                     </Menu.Item>
-                    <Menu.Item>
+                    {/* <Menu.Item>
                       <Link to="/account">
                         Account
                       </Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                   </Menu>
                   <AccountModule />
                 </Segment>
