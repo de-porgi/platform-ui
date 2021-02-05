@@ -17,6 +17,34 @@ export const getProjects = state => {
   }
 }
 
+export const getFirstSeason = (address) => getSeason(address, "GetFirstSeason")
+export const getNextSeasons = (address) => getSeason(address, "GetNextSeasons")
+
+export const getSeason = (address, meth) => {
+  const res = useSWR(
+    [address, meth],
+    contractCaller(ProjectABI)
+  )
+
+  return {
+    season: res.data && {
+      Presale: res.data["Presale"],
+      ActiveSeries: res.data["ActiveSeries"],
+      StakePercentsLeft: res.data["StakePercentsLeft"],
+      Series: [
+        res.data["Series"] && {
+          Duration: res.data["Series"]["Duration"],
+          StakeUnlock: res.data["Series"]["StakeUnlock"],
+          Start: res.data["Series"]["Start"],
+          Vote: res.data["Series"]["Vote"]
+        }
+      ]
+    },
+    error: res.error,
+    loading: !res.error && !res.data
+  }
+}
+
 export const getProjectField = (address, field, ...args) => {
   const res = useSWR(
     [address, field, ...args],

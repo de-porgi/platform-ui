@@ -1,8 +1,22 @@
 import React, { useState } from 'react'
-import { Header, Table, Form, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { getProjectBaseInfo, getProjectField, invest } from '../hooks'
+import {
+  Header,
+  Table,
+  Form,
+  Segment,
+  Dimmer,
+  Loader,
+  Accordion, Label,
+} from 'semantic-ui-react'
+import {
+  getFirstSeason, getNextSeasons,
+  getProjectBaseInfo,
+  getProjectField,
+  invest,
+} from '../hooks'
 import { useWallet } from '../wallet'
 import { toWei } from '../web3-utils'
+import Season from './Season'
 
 const ProjectDetails = (props) => {
   const { web3 } = useWallet()
@@ -26,19 +40,49 @@ const ProjectDetails = (props) => {
     console.log(res)
   }
 
+  const firstSeason = () => {
+    const { season } = getFirstSeason(props.address)
+    return season
+  }
+
+  const nextSeasons = () => {
+    const { season } = getNextSeasons(props.address)
+    return season
+  }
+
+  let seasons = firstSeason()
+  let next = nextSeasons()
+  if (Array.isArray(next)) {
+    seasons = [seasons, ...next]
+  } else {
+    seasons = [seasons, next]
+  }
+
+  const panels = seasons && seasons.map((season, i) => {
+    return season && newSeasonPanel(season, i)
+  })
+
+  function newSeasonPanel(season, i) {
+    return {
+      key: i,
+      title: {
+        content: <Label color='blue' content={`Season${i.toString()}`} />
+      },
+      content: {
+        content: <Season season={season} />
+      },
+    }
+  }
+
   return (
     <Segment>
       <Dimmer active={loading} inverted>
         <Loader />
       </Dimmer>
 
-      <Header as="h1" textAlign="center">
-        {baseProjectInfo.projectName}
-      </Header>
+      <Header as="h1" textAlign="center">{baseProjectInfo.projectName}</Header>
 
-      <Header as="h2" dividing>
-        Details
-      </Header>
+      <Header as="h2" dividing>Details</Header>
 
       <Table definition>
         <Table.Body>
@@ -65,9 +109,7 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      <Header as="h2" dividing>
-        Token
-      </Header>
+      <Header as="h2" dividing>Token</Header>
 
       <Table definition>
         <Table.Body>
@@ -110,6 +152,10 @@ const ProjectDetails = (props) => {
           </Form.Field>
         </Form>
       }
+
+      <Header as="h2" dividing>Seasons</Header>
+
+      <Accordion defaultActiveIndex={0} panels={panels} />
     </Segment>
   )
 }

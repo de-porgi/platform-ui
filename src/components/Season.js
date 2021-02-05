@@ -1,34 +1,16 @@
-import React, { useState } from 'react'
-import { Accordion, Container, Icon } from 'semantic-ui-react'
+import React from 'react'
+import { Header } from 'semantic-ui-react'
 import Series from './Series'
 
-const Season = () => {
-  const [activeSeries] = useState(0)
-  const stakePercentsLeft = 0
-  const [activeIndex, setActiveIndex] = useState(activeSeries)
-  function handleClick(e, titleProps) {
-    const { index } = titleProps
-    setActiveIndex(activeIndex === index ? -1 : index)
-  }
-
+const Season = (props) => {
   return (
-    <Container>
-      <p>Stake Percents Left: {stakePercentsLeft}</p>
+    <div>
+      <Header as="h4" dividing>Stake Percents Left: {props.season.StakePercentsLeft || '-'}</Header>
 
-      <Accordion fluid styled>
-        <Accordion.Title
-          active={activeIndex === 0}
-          index={0}
-          onClick={handleClick}
-        >
-          <Icon name="dropdown" />
-          Series1
-        </Accordion.Title>
-        <Accordion.Content active={activeIndex === 0}>
-          <Series />
-        </Accordion.Content>
-      </Accordion>
-    </Container>
+      {props.season.Series.map((series, i) => (
+        <Series key={i} series={series} />
+      ))}
+    </div>
   )
 }
 
