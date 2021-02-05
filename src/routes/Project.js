@@ -1,7 +1,10 @@
 import React from 'react'
+import ProjectDetails from '../components/ProjectDetails'
+import { useParams } from 'react-router-dom'
 
 const Project = () => {
-  return <div />
+  const { address } = useParams()
+  return <ProjectDetails address={address} />
 }
 
 export default Project
