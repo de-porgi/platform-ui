@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Header, Table, Form, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { getProjectBaseInfo, getProjectField } from '../hooks'
+import { getProjectBaseInfo, getProjectField, invest } from '../hooks'
 import { useWallet } from '../wallet'
-import ProjectABI from '../abi/project'
+import { toWei } from '../web3-utils'
 
 const ProjectDetails = (props) => {
-  const { web3, account } = useWallet()
+  const { web3 } = useWallet()
   const { baseProjectInfo, loading } = getProjectBaseInfo(props.address)
   const creationBlock = loadFiled("creationBlock")
   const activeVoting = loadFiled("ActiveVoting")
@@ -16,25 +16,14 @@ const ProjectDetails = (props) => {
     return val
   }
 
-  const [weiCount, setWeiCount] = useState(1000000000000000000)
+  const [etherCount, setWeiCount] = useState("1")
   function inputChange(e) {
     setWeiCount(e.target.value)
   }
 
-  function onSubmit() {
-    const contract = new web3.eth.Contract(ProjectABI, props.address)
-
-    web3.eth.sendTransaction({
-      to: props.address,
-      from: account,
-      value: weiCount.toString(),
-      data: contract.methods.Invest().encodeABI()
-    })
-      .then(() => {
-        alert("Invested!")
-        window.location.reload(true)
-      })
-      .catch(err => alert("Error happened during investing: " + err.message))
+  async function onSubmit() {
+    const res = await invest(web3, props.address, toWei(etherCount))
+    console.log(res)
   }
 
   return (
@@ -104,12 +93,12 @@ const ProjectDetails = (props) => {
       {baseProjectInfo.state === (2).toString() &&
         <Form onSubmit={onSubmit}>
           <Form.Field required>
-            <label> Wei Count (1 Ether = 1,000,000,000,000,000,000 Wei)</label>
+            <label> Ether Count </label>
             <Form.Input
-              placeholder='Wei Count'
-              name='wei'
+              placeholder='Ether Count'
+              name='ether'
               type='number'
-              value={weiCount}
+              value={etherCount}
               onChange={inputChange}
             />
             <Form.Button

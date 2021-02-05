@@ -53,7 +53,8 @@ export const getProjectBaseInfo = (address) => {
   }
 }
 
-export const newProject = (web3, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', props)
+export const invest = (web3, address, val) => contractSender(web3, ProjectABI)(address, 'Invest', val)
+export const newProject = (web3, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', '0', props)
 
 const contractCaller = abi => (...args) => {
   const [address, meth, ...params] = args
@@ -63,8 +64,8 @@ const contractCaller = abi => (...args) => {
 }
 
 const contractSender = (web3, abi) => async (...args) => {
-  const [address, meth, ...params] = args
+  const [address, meth, val, ...params] = args
   const contract = new web3.eth.Contract(abi, address)
   const from = await getMainAccount(web3)
-  return contract.methods[meth](...params).send({ from: from })
+  return contract.methods[meth](...params).send({ from: from, value: val })
 }
