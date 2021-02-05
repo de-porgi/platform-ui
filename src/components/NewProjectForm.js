@@ -9,6 +9,7 @@ import {
 
 import { useWallet } from '../wallet'
 import { newProject } from '../hooks'
+import { toWei } from 'web3-utils'
 
 // TODO Add additional explanation for each field
 const NewProjectForm = () => {
@@ -19,21 +20,45 @@ const NewProjectForm = () => {
   const { input: symbol } = useInput("Hate Google")
 
   const { input: decimals } = useInput(18)
-  const { input: price } = useInput("100000000000000000000")
+  const { input: price } = useInput("1")
   const { input: distribution } = useInput(20)
   const { input: presaleDuration } = useInput(100)
 
-  const [serieses, setSerieses] = useState([{
-    Duration: 100,
-    StakeUnlock: 25,
-    Vote: {
+  const [serieses, setSerieses] = useState([
+    {
       Duration: 100,
-      Filters: [{
-        Schema: 2,
-        Value: 50,
-      }]
+      StakeUnlock: 30,
+      Vote: {
+        Duration: 100,
+        Filters: [{
+          Schema: 2,
+          Value: 50,
+        }]
+      }
+    },
+    {
+      Duration: 100,
+      StakeUnlock: 30,
+      Vote: {
+        Duration: 100,
+        Filters: [{
+          Schema: 2,
+          Value: 50,
+        }]
+      }
+    },
+    {
+      Duration: 100,
+      StakeUnlock: 40,
+      Vote: {
+        Duration: 100,
+        Filters: [{
+          Schema: 2,
+          Value: 50,
+        }]
+      }
     }
-  }])
+  ])
 
   const onSubmit = async () => {
     const project = {
@@ -43,7 +68,7 @@ const NewProjectForm = () => {
       TokenDecimal: decimals.value,
       FirstSeason: {
         Presale: {
-          TokenPrice: price.value,
+          TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
           Duration: presaleDuration.value,
         },
