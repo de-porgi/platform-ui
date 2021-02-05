@@ -5,7 +5,7 @@ const infuraAPI = 'wss://mainnet.infura.io/ws/v3/' + infuraProjectId
 
 export const contractAddresses = {
   aave: '0xf8aC10E65F2073460aAD5f28E1EABE807DC287CF',
-  porgi: '0x1896ea2208fE9fAaE5B2887e29F11BF4481857B5',
+  porgi: '0x0c724a3be0866a44354F01469D8eAf7D8b01950e',
 }
 
 export const defaultConfig = {
@@ -16,6 +16,7 @@ export const defaultConfig = {
   providers: [{ id: 'provided' }],
   live: true,
   web3Provider: new Web3.providers.WebsocketProvider(infuraAPI),
+  type: 'test'
 }
 
 export const getNetworkByChainId = () => {

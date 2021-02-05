@@ -13,7 +13,7 @@ const ButtonConnect = React.forwardRef(function ButtonConnect(
       innerRef={ref}
       display={below('medium') ? 'icon' : 'all'}
       icon={<IconConnect />}
-      label="Connect account"
+      label="Connect wallet"
       onClick={onClick}
       css={`
         min-width: ${5 * GU}px;

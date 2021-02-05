@@ -1,12 +1,12 @@
 import React from 'react'
 import { Segment, Container } from 'semantic-ui-react'
 
-import CompanyForm from '../components/ApplicationForm/CompanyForm'
+import NewProjectForm from '../components/NewProjectForm'
 
 const NewProject = () => {
   return (
     <Segment as={Container}>
-      <CompanyForm />
+      <NewProjectForm />
     </Segment>
   )
 }
