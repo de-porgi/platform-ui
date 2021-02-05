@@ -1,22 +1,12 @@
 import React from 'react'
-import { Container, Header, Table, Button, Input } from 'semantic-ui-react'
+import { Container, Header, Table, Form } from 'semantic-ui-react'
 import { getProjectBaseInfo, getProjectField } from '../hooks'
-import { getWeb3 } from '../web3-utils'
+import { useWallet } from '../wallet'
 import ProjectABI from '../abi/project'
-import { defaultConfig } from '../environment'
 
 const ProjectDetails = (props) => {
-  const { baseInfo, loading } = getProjectBaseInfo(props.address)
-  const owner = baseInfo[0] || (loading && "Loading...")
-  const projectName = baseInfo[1] || (loading && "Loading...")
-  const name = baseInfo[2] || (loading && "Loading...")
-  const symbol = baseInfo[3] || (loading && "Loading...")
-  const decimals = baseInfo[4] || (loading && "Loading...")
-  // TODO will be used for accordion
-  // const activeSeason = baseInfo[5] || (loading && "Loading...")
-  const statistic = baseInfo[6] || (loading && "Loading...")
-  const state = statistic[1] || (loading && "Loading...")
-
+  const { web3, account } = useWallet()
+  const { baseProjectInfo } = getProjectBaseInfo(props.address)
   const creationBlock = loadFiled("creationBlock")
   const activeVoting = loadFiled("ActiveVoting")
   const totalSupply = loadFiled("totalSupply")
@@ -26,28 +16,29 @@ const ProjectDetails = (props) => {
     return val
   }
 
-  let weiCount = 300000000000000
-  // TODO it works, but require refines
-  function invest() {
-    const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
+  let weiCount = 1000000000000000
+  function inputChange(e) {
+    weiCount = e.target.value
+    console.log(weiCount)
+  }
+
+  function onSubmit() {
     const contract = new web3.eth.Contract(ProjectABI, props.address)
 
     web3.eth.sendTransaction({
       to: props.address,
-      from: window.ethereum.selectedAddress,
+      from: account,
       value: weiCount.toString(),
       data: contract.methods.Invest().encodeABI()
-    })
-  }
-
-  function handleCount(e) {
-    weiCount = e.target.value
+    }).then(() => {
+      alert("Invested!")
+    }).catch(err => alert("Error happened during investing: " + err))
   }
 
   return (
     <Container>
       <Header as="h1" textAlign="center">
-        {projectName}
+        {baseProjectInfo.projectName}
       </Header>
 
       <Header as="h2" dividing>
@@ -58,15 +49,15 @@ const ProjectDetails = (props) => {
         <Table.Body>
           <Table.Row>
             <Table.Cell width={2}>Owner</Table.Cell>
-            <Table.Cell>{owner}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.owner}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Name</Table.Cell>
-            <Table.Cell>{name}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.name}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{state}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.statistic.state}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
@@ -87,7 +78,7 @@ const ProjectDetails = (props) => {
         <Table.Body>
           <Table.Row>
             <Table.Cell width={2}>Symbol</Table.Cell>
-            <Table.Cell>{symbol}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.symbol}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Total Supply</Table.Cell>
@@ -95,7 +86,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>Decimals</Table.Cell>
-            <Table.Cell>{decimals}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.decimals}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Transfers</Table.Cell>
@@ -104,12 +95,26 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      <Input onChange={handleCount} fluid size='large' type='number' placeholder='Count of WEI' defaultValue={weiCount} action>
-        <input />
-        <Button positive
-                onClick={invest}
-        >Invest</Button>
-      </Input>
+      {baseProjectInfo.statistic.state === (1).toString() &&
+        <Form onSubmit={onSubmit}>
+          <Form.Field required>
+            <label> Wei Count (1 Ether = 1,000,000,000,000,000,000 Wei)</label>
+            <Form.Input
+              placeholder='Wei Count'
+              name='wei'
+              type='number'
+              defaultValue={weiCount}
+              onChange={inputChange}
+            />
+            <Form.Button
+              disabled={!web3}
+              content={web3 ? 'Invest' : 'Connect your account'}
+              fluid
+              positive
+            />
+          </Form.Field>
+        </Form>
+      }
     </Container>
   )
 }

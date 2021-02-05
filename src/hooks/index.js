@@ -35,7 +35,31 @@ export const getProjectBaseInfo = (address) => {
   )
 
   return {
-    baseInfo: res.data || [],
+    baseProjectInfo: (!res.error && res.data &&
+      {
+        owner: res.data[0],
+        projectName: res.data[1],
+        name: res.data[2],
+        symbol: res.data[3],
+        decimals: res.data[4],
+        activeSeason: res.data[5],
+        statistic: {
+          index: res.data[6][0],
+          state: res.data[6][1]
+        }
+      }
+    ) || !res.error && {
+      owner: "Loading....",
+      projectName: "Loading....",
+      name: "Loading....",
+      symbol: "Loading....",
+      decimals: "Loading....",
+      activeSeason: "Loading....",
+      statistic: {
+        index: "Loading....",
+        state: "Loading...."
+      }
+    },
     error: res.error,
     loading: !res.error && !res.data
   }
