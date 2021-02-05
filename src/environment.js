@@ -16,6 +16,7 @@ export const defaultConfig = {
   providers: [{ id: 'provided' }],
   live: true,
   web3Provider: new Web3.providers.WebsocketProvider(infuraAPI),
+  type: 'test'
 }
 
 export const getNetworkByChainId = () => {

@@ -5,6 +5,7 @@ import { EthereumAddressType } from '../prop-types'
 import img from '../../public/anus.jpg'
 import { Link } from 'react-router-dom'
 
+// TODO Add placeholder
 const ProjectCard = ({ address }) => {
   return (
       <Card>
