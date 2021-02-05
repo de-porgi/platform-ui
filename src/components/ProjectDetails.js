@@ -19,7 +19,6 @@ const ProjectDetails = (props) => {
   let weiCount = 1000000000000000
   function inputChange(e) {
     weiCount = e.target.value
-    console.log(weiCount)
   }
 
   function onSubmit() {
