@@ -43,23 +43,10 @@ export const getProjectBaseInfo = (address) => {
         symbol: res.data[3],
         decimals: res.data[4],
         activeSeason: res.data[5],
-        statistic: {
-          index: res.data[6][0],
-          state: res.data[6][1]
-        }
+        index: res.data[6]["Index"],
+        state: res.data[6]["State"]
       }
-    ) || !res.error && {
-      owner: "Loading....",
-      projectName: "Loading....",
-      name: "Loading....",
-      symbol: "Loading....",
-      decimals: "Loading....",
-      activeSeason: "Loading....",
-      statistic: {
-        index: "Loading....",
-        state: "Loading...."
-      }
-    },
+    ) || [],
     error: res.error,
     loading: !res.error && !res.data
   }

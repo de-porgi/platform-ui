@@ -1,12 +1,12 @@
-import React from 'react'
-import { Container, Header, Table, Form } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Header, Table, Form, Segment, Dimmer, Loader } from 'semantic-ui-react'
 import { getProjectBaseInfo, getProjectField } from '../hooks'
 import { useWallet } from '../wallet'
 import ProjectABI from '../abi/project'
 
 const ProjectDetails = (props) => {
   const { web3, account } = useWallet()
-  const { baseProjectInfo } = getProjectBaseInfo(props.address)
+  const { baseProjectInfo, loading } = getProjectBaseInfo(props.address)
   const creationBlock = loadFiled("creationBlock")
   const activeVoting = loadFiled("ActiveVoting")
   const totalSupply = loadFiled("totalSupply")
@@ -16,9 +16,9 @@ const ProjectDetails = (props) => {
     return val
   }
 
-  let weiCount = 1000000000000000
+  const [weiCount, setWeiCount] = useState(1000000000000000000)
   function inputChange(e) {
-    weiCount = e.target.value
+    setWeiCount(e.target.value)
   }
 
   function onSubmit() {
@@ -29,13 +29,20 @@ const ProjectDetails = (props) => {
       from: account,
       value: weiCount.toString(),
       data: contract.methods.Invest().encodeABI()
-    }).then(() => {
-      alert("Invested!")
-    }).catch(err => alert("Error happened during investing: " + err))
+    })
+      .then(() => {
+        alert("Invested!")
+        window.location.reload(true)
+      })
+      .catch(err => alert("Error happened during investing: " + err.message))
   }
 
   return (
-    <Container>
+    <Segment>
+      <Dimmer active={loading} inverted>
+        <Loader />
+      </Dimmer>
+
       <Header as="h1" textAlign="center">
         {baseProjectInfo.projectName}
       </Header>
@@ -56,7 +63,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{baseProjectInfo.statistic.state}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.state}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
@@ -94,7 +101,7 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      {baseProjectInfo.statistic.state === (1).toString() &&
+      {baseProjectInfo.state === (2).toString() &&
         <Form onSubmit={onSubmit}>
           <Form.Field required>
             <label> Wei Count (1 Ether = 1,000,000,000,000,000,000 Wei)</label>
@@ -102,7 +109,7 @@ const ProjectDetails = (props) => {
               placeholder='Wei Count'
               name='wei'
               type='number'
-              defaultValue={weiCount}
+              value={weiCount}
               onChange={inputChange}
             />
             <Form.Button
@@ -114,7 +121,7 @@ const ProjectDetails = (props) => {
           </Form.Field>
         </Form>
       }
-    </Container>
+    </Segment>
   )
 }
 
