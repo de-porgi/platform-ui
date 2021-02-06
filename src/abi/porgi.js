@@ -1,4 +1,4 @@
-export default[
+export default [
 	{
 		"inputs": [
 			{
@@ -85,9 +85,14 @@ export default[
 										"internalType": "uint64",
 										"name": "Duration",
 										"type": "uint64"
+									},
+									{
+										"internalType": "uint256",
+										"name": "MinCap",
+										"type": "uint256"
 									}
 								],
-								"internalType": "struct Common.InitFistPresale",
+								"internalType": "struct Common.InitFirstPresale",
 								"name": "Presale",
 								"type": "tuple"
 							},
@@ -141,86 +146,6 @@ export default[
 						"internalType": "struct Common.InitFirstSeason",
 						"name": "FirstSeason",
 						"type": "tuple"
-					},
-					{
-						"components": [
-							{
-								"components": [
-									{
-										"internalType": "uint256",
-										"name": "TokensEmissionPercent",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint64",
-										"name": "Emissions",
-										"type": "uint64"
-									},
-									{
-										"internalType": "uint8",
-										"name": "OwnerTokensPercent",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint64",
-										"name": "TimeBetweenEmissions",
-										"type": "uint64"
-									}
-								],
-								"internalType": "struct Common.InitSecondaryPresale",
-								"name": "Presale",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "uint64",
-										"name": "Duration",
-										"type": "uint64"
-									},
-									{
-										"internalType": "uint8",
-										"name": "StakeUnlock",
-										"type": "uint8"
-									},
-									{
-										"components": [
-											{
-												"internalType": "uint64",
-												"name": "Duration",
-												"type": "uint64"
-											},
-											{
-												"components": [
-													{
-														"internalType": "uint8",
-														"name": "Schema",
-														"type": "uint8"
-													},
-													{
-														"internalType": "uint64",
-														"name": "Value",
-														"type": "uint64"
-													}
-												],
-												"internalType": "struct Common.VoteFilter[]",
-												"name": "Filters",
-												"type": "tuple[]"
-											}
-										],
-										"internalType": "struct Common.VoteProperty",
-										"name": "Vote",
-										"type": "tuple"
-									}
-								],
-								"internalType": "struct Common.InitSeries[]",
-								"name": "Series",
-								"type": "tuple[]"
-							}
-						],
-						"internalType": "struct Common.InitNextSeason[]",
-						"name": "NextSeasons",
-						"type": "tuple[]"
 					}
 				],
 				"internalType": "struct Common.InitProjectProperty",
@@ -273,6 +198,11 @@ export default[
 						"internalType": "uint32",
 						"name": "Index",
 						"type": "uint32"
+					},
+					{
+						"internalType": "uint64",
+						"name": "TimeCreated",
+						"type": "uint64"
 					}
 				],
 				"internalType": "struct Porgi.Statistic",
