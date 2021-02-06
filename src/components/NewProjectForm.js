@@ -23,6 +23,7 @@ const NewProjectForm = () => {
   const { input: price } = useInput("1")
   const { input: distribution } = useInput(20)
   const { input: presaleDuration } = useInput(100)
+  const { input: minCap } = useInput(10000000000)
 
   const [serieses, setSerieses] = useState([
     {
@@ -71,18 +72,10 @@ const NewProjectForm = () => {
           TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
           Duration: presaleDuration.value,
+          MinCap: minCap.value
         },
         Series: serieses,
-      },
-      NextSeasons: [{
-        Presale: {
-          TokensEmissionPercent: 50,
-          Emissions: 2,
-          OwnerTokensPercent: 10,
-          TimeBetweenEmissions: 100,
-        },
-        Series: serieses,
-      }],
+      }
     }
 
     const res = await newProject(web3, project)
@@ -158,6 +151,14 @@ const NewProjectForm = () => {
                     type="number"
                     placeholder="14"
                     {...presaleDuration}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label> Minimal Required Capitalization </label>
+                  <input
+                    type="number"
+                    placeholder="100000"
+                    {...minCap}
                   />
                 </Form.Field>
                 <Header as="h3"> Configure Initial Season </Header>
