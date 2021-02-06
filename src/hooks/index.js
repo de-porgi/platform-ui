@@ -17,7 +17,7 @@ export const getProjects = state => {
   }
 }
 
-export const getSeasons = (address) => {
+export const getSeasons = address => {
   const res = useSWR(
     [address, "GetSeasons"],
     contractCaller(ProjectABI)
@@ -62,7 +62,7 @@ export const getProjectField = (address, field, ...args) => {
   }
 }
 
-export const getProjectBaseInfo = (address) => {
+export const getProjectBaseInfo = address => {
   const res = useSWR(
     [address, "GetProjectBaseInfo"],
     contractCaller(ProjectABI)
@@ -84,7 +84,7 @@ export const getProjectBaseInfo = (address) => {
   }
 }
 
-export const getProjectStatistic = (address) => {
+export const getProjectStatistic = address => {
   const res = useSWR(
     [contractAddresses.porgi, "GetProjectStatistic", address],
     contractCaller(PorgiABI)
