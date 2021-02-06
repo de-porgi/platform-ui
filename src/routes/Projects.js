@@ -9,11 +9,13 @@ const Projects = () => {
 
   return (
     <Segment as={Container} loading={loading} placeholder={loading}>
-      <Card.Group itemsPerRow="4">
-        {projects.map((project, i) => (
-          <ProjectCard key={i} address={project} />
-        ))}
-      </Card.Group>
+      {!loading ? (
+        <Card.Group itemsPerRow="4">
+          {projects.map((address, i) => (
+            <ProjectCard key={i} address={address} />
+          ))}
+        </Card.Group>
+      ) : (<></>)}
     </Segment>
   )
 }
