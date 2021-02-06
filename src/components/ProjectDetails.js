@@ -6,12 +6,11 @@ import {
   Segment,
   Dimmer,
   Loader,
-  Accordion, Label,
+  Accordion,
 } from 'semantic-ui-react'
 import {
-  getFirstSeason, getNextSeasons,
   getProjectBaseInfo,
-  getProjectField,
+  getProjectField, getSeasons,
   invest,
 } from '../hooks'
 import { useWallet } from '../wallet'
@@ -35,43 +34,38 @@ const ProjectDetails = (props) => {
     setWeiCount(e.target.value)
   }
 
-  async function onSubmit() {
-    const res = await invest(web3, props.address, toWei(etherCount))
-    console.log(res)
+  const { firstSeason, nextSeasons } = getSeasons(props.address)
+  let panels = firstSeason && [newSeasonPanel(firstSeason, 1)]
+  if (nextSeasons && nextSeasons.length > 0) {
+    panels = [...panels, nextSeasons.map((season, i) => {
+      return season && newSeasonPanel(season, i+2)
+    })]
   }
-
-  const firstSeason = () => {
-    const { season } = getFirstSeason(props.address)
-    return season
-  }
-
-  const nextSeasons = () => {
-    const { season } = getNextSeasons(props.address)
-    return season
-  }
-
-  let seasons = firstSeason()
-  let next = nextSeasons()
-  if (Array.isArray(next)) {
-    seasons = [seasons, ...next]
-  } else {
-    seasons = [seasons, next]
-  }
-
-  const panels = seasons && seasons.map((season, i) => {
-    return season && newSeasonPanel(season, i)
-  })
 
   function newSeasonPanel(season, i) {
     return {
       key: i,
       title: {
-        content: <Label color='blue' content={`Season${i.toString()}`} />
+        content: <b>{`Season ${i.toString()}`}</b>
       },
       content: {
-        content: <Season season={season} />
+        content: (
+          <div>
+            {baseProjectInfo.activeSeason === i &&
+              <Header as='h4' inverted color='green'>
+                Active
+              </Header>
+            }
+            <Season season={season} />
+          </div>
+        )
       },
     }
+  }
+
+  async function onSubmit() {
+    const res = await invest(web3, props.address, toWei(etherCount))
+    console.log(res)
   }
 
   return (
@@ -155,7 +149,12 @@ const ProjectDetails = (props) => {
 
       <Header as="h2" dividing>Seasons</Header>
 
-      <Accordion defaultActiveIndex={0} panels={panels} />
+      <Accordion
+        styled
+        fluid
+        defaultActiveIndex={baseProjectInfo.activeSeason > -1 && baseProjectInfo.activeSeason || 0}
+        panels={panels}
+      />
     </Segment>
   )
 }

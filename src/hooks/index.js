@@ -17,29 +17,34 @@ export const getProjects = state => {
   }
 }
 
-export const getFirstSeason = (address) => getSeason(address, "GetFirstSeason")
-export const getNextSeasons = (address) => getSeason(address, "GetNextSeasons")
-
-export const getSeason = (address, meth) => {
+export const getSeasons = (address) => {
   const res = useSWR(
-    [address, meth],
+    [address, "GetSeasons"],
     contractCaller(ProjectABI)
   )
 
   return {
-    season: res.data && {
-      Presale: res.data["Presale"],
-      ActiveSeries: res.data["ActiveSeries"],
-      StakePercentsLeft: res.data["StakePercentsLeft"],
-      Series: [
-        res.data["Series"] && {
-          Duration: res.data["Series"]["Duration"],
-          StakeUnlock: res.data["Series"]["StakeUnlock"],
-          Start: res.data["Series"]["Start"],
-          Vote: res.data["Series"]["Vote"]
+    firstSeason: res.data && {
+      ActiveSeries: res.data[0]["ActiveSeries"],
+      StakePercentsLeft: res.data[0]["StakePercentsLeft"],
+      Presale: res.data[0]["Presale"] && {
+        Duration: res.data[0]["Presale"]["Duration"],
+        MinCap: res.data[0]["Presale"]["MinCap"],
+        OwnerPercent: res.data[0]["Presale"]["OwnerPercent"],
+        Price: res.data[0]["Presale"]["Price"],
+        Start: res.data[0]["Presale"]["Start"],
+        TotalGenerated: res.data[0]["Presale"]["TotalGenerated"],
+      },
+      Series: res.data[0]["Series"] && [
+        {
+          Duration: res.data[0]["Series"]["Duration"],
+          StakeUnlock: res.data[0]["Series"]["StakeUnlock"],
+          Start: res.data[0]["Series"]["Start"],
+          Vote: res.data[0]["Series"]["Vote"]
         }
       ]
     },
+    nextSeasons: res.data && res.data[1],
     error: res.error,
     loading: !res.error && !res.data
   }

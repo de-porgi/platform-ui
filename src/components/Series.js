@@ -6,21 +6,21 @@ const Series = (props) => {
     <Item.Group>
       <Item>
         <Item.Content>
-          <Item.Header>Series1</Item.Header>
+          <Item.Header>Series {props.number}</Item.Header>
           <Item.Description>
             <Grid columns={4} divided>
               <Grid.Row>
                 <Grid.Column>
-                  <p>Start: {props.series && props.series.Start  || '-'}</p>
+                  <p>Start: {props.series && props.series.Start}</p>
                 </Grid.Column>
                 <Grid.Column>
-                  <p>Duration: {props.series && props.series.Duration || '-'}</p>
+                  <p>Duration: {props.series && props.series.Duration}</p>
                 </Grid.Column>
                 <Grid.Column>
-                  <p>Stake Unlock: {props.series && props.series.StakeUnlock || '-'}</p>
+                  <p>Stake Unlock: {props.series && props.series.StakeUnlock}</p>
                 </Grid.Column>
                 <Grid.Column>
-                  <p>Vote: {props.series && props.series.Vote || '-'}</p>
+                  <p>Vote: {props.series && props.series.Vote}</p>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
