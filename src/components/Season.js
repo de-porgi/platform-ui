@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid, Header } from 'semantic-ui-react'
 import Series from './Series'
+import { fromWei } from '../web3-utils'
 
 const Season = (props) => {
   return (
@@ -24,7 +25,7 @@ const Season = (props) => {
 
         <Grid.Row>
           <Grid.Column>
-            <b>Price</b>: {props.season.Presale.Price}
+            <b>Price</b>: {props.season.Presale.Price && fromWei(props.season.Presale.Price)} ETH
           </Grid.Column>
           <Grid.Column>
             <b>Minimum Capacity</b>: {props.season.Presale.MinCap}
