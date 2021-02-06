@@ -21,6 +21,7 @@ const ProjectDetails = (props) => {
   const { web3 } = useWallet()
   const { baseProjectInfo, loading } = getProjectBaseInfo(props.address)
   const creationBlock = loadFiled("creationBlock")
+  const state = loadFiled("State")
   const activeVoting = loadFiled("ActiveVoting")
   const totalSupply = loadFiled("totalSupply")
 
@@ -90,7 +91,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{baseProjectInfo.state}</Table.Cell>
+            <Table.Cell>{state}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
@@ -118,6 +119,10 @@ const ProjectDetails = (props) => {
           <Table.Row>
             <Table.Cell>Decimals</Table.Cell>
             <Table.Cell>{baseProjectInfo.decimals}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Price</Table.Cell>
+            <Table.Cell>{baseProjectInfo.price}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Transfers</Table.Cell>

@@ -77,8 +77,7 @@ export const getProjectBaseInfo = (address) => {
         symbol: res.data[3],
         decimals: res.data[4],
         activeSeason: res.data[5],
-        index: res.data[6]["Index"],
-        state: res.data[6]["State"]
+        price: res.data[6]
       }
     ) || [],
     error: res.error,
