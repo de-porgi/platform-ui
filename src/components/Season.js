@@ -1,34 +1,56 @@
-import React, { useState } from 'react'
-import { Accordion, Container, Icon } from 'semantic-ui-react'
+import React from 'react'
+import { Grid, Header } from 'semantic-ui-react'
 import Series from './Series'
+import { fromWei } from '../web3-utils'
 
-const Season = () => {
-  const [activeSeries] = useState(0)
-  const stakePercentsLeft = 0
-  const [activeIndex, setActiveIndex] = useState(activeSeries)
-  function handleClick(e, titleProps) {
-    const { index } = titleProps
-    setActiveIndex(activeIndex === index ? -1 : index)
-  }
-
+const Season = (props) => {
   return (
-    <Container>
-      <p>Stake Percents Left: {stakePercentsLeft}</p>
+    <div>
+      {props.season.ActiveSeries > -1 &&
+        <Header as="h4" color={"green"} textAlign={"center"}>Active</Header>
+      }
 
-      <Accordion fluid styled>
-        <Accordion.Title
-          active={activeIndex === 0}
-          index={0}
-          onClick={handleClick}
+      <Grid columns={3}>
+        <Grid.Row>
+          <Grid.Column>
+            <b>Start</b>: {props.season.Presale.Start}
+          </Grid.Column>
+          <Grid.Column>
+            <b>Duration</b>: {props.season.Presale.Duration}
+          </Grid.Column>
+          <Grid.Column>
+            <b>Owner Percent</b>: {props.season.Presale.OwnerPercent}
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+          <Grid.Column>
+            <b>Price</b>: {props.season.Presale.Price && fromWei(props.season.Presale.Price)} ETH
+          </Grid.Column>
+          <Grid.Column>
+            <b>Minimum Capacity</b>: {props.season.Presale.MinCap && fromWei(props.season.Presale.MinCap)} ETH}
+          </Grid.Column>
+          <Grid.Column>
+            <b>Total Generated</b>: {props.season.Presale.TotalGenerated}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+
+      {props.season.ActiveSeries > -1 &&
+        <Header as="h4" dividing>Series</Header> ||
+        <Header
+          as="h4"
+          color={"brown"}
+          textAlign={"center"}
         >
-          <Icon name="dropdown" />
-          Series1
-        </Accordion.Title>
-        <Accordion.Content active={activeIndex === 0}>
-          <Series />
-        </Accordion.Content>
-      </Accordion>
-    </Container>
+          There are no series yet
+        </Header>
+      }
+
+      {props.season.ActiveSeries > -1 && props.season.Series.map((series, i) => (
+        <Series key={i} number={i+1} series={series} />
+      ))}
+    </div>
   )
 }
 

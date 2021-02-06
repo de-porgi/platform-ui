@@ -1,13 +1,33 @@
 import React, { useState } from 'react'
-import { Header, Table, Form, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { getProjectBaseInfo, getProjectField, invest } from '../hooks'
+import {
+  Header,
+  Table,
+  Form,
+  Segment,
+  Dimmer,
+  Loader,
+  Accordion,
+} from 'semantic-ui-react'
+import {
+  getProjectBaseInfo,
+  getProjectField,
+  getProjectStatistic,
+  getSeasons,
+  invest,
+} from '../hooks'
 import { useWallet } from '../wallet'
-import { toWei } from '../web3-utils'
+import { fromWei, toWei } from '../web3-utils'
+import Season from './Season'
+import { projectStates, projectStatesNames } from '../enum/projectState'
+import { secondsToDate } from '../utils'
 
 const ProjectDetails = (props) => {
   const { web3 } = useWallet()
   const { baseProjectInfo, loading } = getProjectBaseInfo(props.address)
+  const { statistic } = getProjectStatistic(props.address)
+  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
   const creationBlock = loadFiled("creationBlock")
+  const state = loadFiled("State")
   const activeVoting = loadFiled("ActiveVoting")
   const totalSupply = loadFiled("totalSupply")
 
@@ -21,6 +41,35 @@ const ProjectDetails = (props) => {
     setWeiCount(e.target.value)
   }
 
+  const { firstSeason, nextSeasons } = getSeasons(props.address)
+  let panels = firstSeason && [newSeasonPanel(firstSeason, 1)]
+  if (nextSeasons && nextSeasons.length > 0) {
+    panels = [...panels, nextSeasons.map((season, i) => {
+      return season && newSeasonPanel(season, i+2)
+    })]
+  }
+
+  function newSeasonPanel(season, i) {
+    return {
+      key: i,
+      title: {
+        content: <b>{`Season ${i.toString()}`}</b>
+      },
+      content: {
+        content: (
+          <div>
+            {baseProjectInfo.activeSeason === i &&
+              <Header as='h4' inverted color='green'>
+                Active
+              </Header>
+            }
+            <Season season={season} />
+          </div>
+        )
+      },
+    }
+  }
+
   async function onSubmit() {
     const res = await invest(web3, props.address, toWei(etherCount))
     console.log(res)
@@ -32,13 +81,9 @@ const ProjectDetails = (props) => {
         <Loader />
       </Dimmer>
 
-      <Header as="h1" textAlign="center">
-        {baseProjectInfo.projectName}
-      </Header>
+      <Header as="h1" textAlign="center">{baseProjectInfo.projectName}</Header>
 
-      <Header as="h2" dividing>
-        Details
-      </Header>
+      <Header as="h2" dividing>Details</Header>
 
       <Table definition>
         <Table.Body>
@@ -52,11 +97,15 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{baseProjectInfo.state}</Table.Cell>
+            <Table.Cell>{state && projectStatesNames[state]}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
             <Table.Cell>{creationBlock}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Date of Creation</Table.Cell>
+            <Table.Cell>{statistic && creationDate.toUTCString()}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Active Voting</Table.Cell>
@@ -65,9 +114,7 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      <Header as="h2" dividing>
-        Token
-      </Header>
+      <Header as="h2" dividing>Token</Header>
 
       <Table definition>
         <Table.Body>
@@ -84,13 +131,17 @@ const ProjectDetails = (props) => {
             <Table.Cell>{baseProjectInfo.decimals}</Table.Cell>
           </Table.Row>
           <Table.Row>
+            <Table.Cell>Price</Table.Cell>
+            <Table.Cell>{baseProjectInfo.price && fromWei(baseProjectInfo.price)} ETH</Table.Cell>
+          </Table.Row>
+          <Table.Row>
             <Table.Cell>Transfers</Table.Cell>
             <Table.Cell>enabled</Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>
 
-      {baseProjectInfo.state === (2).toString() &&
+      {state === projectStates.PresaleInProgress &&
         <Form onSubmit={onSubmit}>
           <Form.Field required>
             <label> Ether Count </label>
@@ -110,6 +161,15 @@ const ProjectDetails = (props) => {
           </Form.Field>
         </Form>
       }
+
+      <Header as="h2" dividing>Seasons</Header>
+
+      <Accordion
+        styled
+        fluid
+        defaultActiveIndex={baseProjectInfo.activeSeason > -1 && baseProjectInfo.activeSeason || 0}
+        panels={panels}
+      />
     </Segment>
   )
 }

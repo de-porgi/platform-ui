@@ -1,31 +1,33 @@
-import React, { useState } from 'react'
-import { Grid } from 'semantic-ui-react'
+import React from 'react'
+import { Grid, Item } from 'semantic-ui-react'
 
-const Series = () => {
-  const [start] = useState('0')
-  const [duration] = useState('0')
-  const [stakeUnlock] = useState('0')
-  const [vote] = useState('Voting')
+const Series = (props) => {
   return (
-    <Grid columns={2} divided>
-      <Grid.Row>
-        <Grid.Column>
-          <p>Start: {start}</p>
-        </Grid.Column>
-        <Grid.Column>
-          <p>Duration: {duration}</p>
-        </Grid.Column>
-      </Grid.Row>
-
-      <Grid.Row>
-        <Grid.Column>
-          <p>Stake Unlock: {stakeUnlock}</p>
-        </Grid.Column>
-        <Grid.Column>
-          <p>Vote: {vote}</p>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+    <Item.Group>
+      <Item>
+        <Item.Content>
+          <Item.Header>Series {props.number}</Item.Header>
+          <Item.Description>
+            <Grid columns={4} divided>
+              <Grid.Row>
+                <Grid.Column>
+                  <p>Start: {props.series && props.series.Start}</p>
+                </Grid.Column>
+                <Grid.Column>
+                  <p>Duration: {props.series && props.series.Duration}</p>
+                </Grid.Column>
+                <Grid.Column>
+                  <p>Stake Unlock: {props.series && props.series.StakeUnlock}</p>
+                </Grid.Column>
+                <Grid.Column>
+                  <p>Vote: {props.series && props.series.Vote}</p>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Item.Description>
+        </Item.Content>
+      </Item>
+    </Item.Group>
   )
 }
 

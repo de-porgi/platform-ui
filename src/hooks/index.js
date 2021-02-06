@@ -17,6 +17,39 @@ export const getProjects = state => {
   }
 }
 
+export const getSeasons = address => {
+  const res = useSWR(
+    [address, "GetSeasons"],
+    contractCaller(ProjectABI)
+  )
+
+  return {
+    firstSeason: res.data && {
+      ActiveSeries: res.data[0]["ActiveSeries"],
+      StakePercentsLeft: res.data[0]["StakePercentsLeft"],
+      Presale: res.data[0]["Presale"] && {
+        Duration: res.data[0]["Presale"]["Duration"],
+        MinCap: res.data[0]["Presale"]["MinCap"],
+        OwnerPercent: res.data[0]["Presale"]["OwnerPercent"],
+        Price: res.data[0]["Presale"]["Price"],
+        Start: res.data[0]["Presale"]["Start"],
+        TotalGenerated: res.data[0]["Presale"]["TotalGenerated"],
+      },
+      Series: res.data[0]["Series"] && [
+        {
+          Duration: res.data[0]["Series"]["Duration"],
+          StakeUnlock: res.data[0]["Series"]["StakeUnlock"],
+          Start: res.data[0]["Series"]["Start"],
+          Vote: res.data[0]["Series"]["Vote"]
+        }
+      ]
+    },
+    nextSeasons: res.data && res.data[1],
+    error: res.error,
+    loading: !res.error && !res.data
+  }
+}
+
 export const getProjectField = (address, field, ...args) => {
   const res = useSWR(
     [address, field, ...args],
@@ -36,18 +69,34 @@ export const getProjectBaseInfo = address => {
   )
 
   return {
-    baseProjectInfo: (!res.error && res.data &&
-    {
-      owner: res.data[0],
-      projectName: res.data[1],
-      name: res.data[2],
-      symbol: res.data[3],
-      decimals: res.data[4],
-      activeSeason: res.data[5],
-      index: res.data[6]["Index"],
-      state: res.data[6]["State"]
-    }
-    ) || [],
+    baseProjectInfo: res.data &&
+      {
+        owner: res.data[0],
+        projectName: res.data[1],
+        name: res.data[2],
+        symbol: res.data[3],
+        decimals: res.data[4],
+        activeSeason: res.data[5],
+        price: res.data[6]
+      } || [],
+    error: res.error,
+    loading: !res.error && !res.data
+  }
+}
+
+export const getProjectStatistic = address => {
+  const res = useSWR(
+    [contractAddresses.porgi, "GetProjectStatistic", address],
+    contractCaller(PorgiABI)
+  )
+
+  return {
+    statistic: res.data &&
+      {
+        State: res.data["State"],
+        Index: res.data["Index"],
+        TimeCreated: res.data["TimeCreated"],
+      } || [],
     error: res.error,
     loading: !res.error && !res.data
   }

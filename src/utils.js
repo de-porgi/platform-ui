@@ -143,3 +143,9 @@ export const iOS =
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 export const isSafari = /Version\/[\d.]+.*Safari/.test(navigator.userAgent)
+
+export const secondsToDate = (seconds) => {
+  const t = new Date(1970, 0, 1)
+  t.setSeconds(seconds)
+  return t
+}
