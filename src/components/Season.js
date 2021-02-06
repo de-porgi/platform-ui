@@ -28,7 +28,7 @@ const Season = (props) => {
             <b>Price</b>: {props.season.Presale.Price && fromWei(props.season.Presale.Price)} ETH
           </Grid.Column>
           <Grid.Column>
-            <b>Minimum Capacity</b>: {props.season.Presale.MinCap}
+            <b>Minimum Capacity</b>: {props.season.Presale.MinCap && fromWei(props.season.Presale.MinCap)} ETH}
           </Grid.Column>
           <Grid.Column>
             <b>Total Generated</b>: {props.season.Presale.TotalGenerated}
