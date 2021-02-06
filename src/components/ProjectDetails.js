@@ -10,17 +10,22 @@ import {
 } from 'semantic-ui-react'
 import {
   getProjectBaseInfo,
-  getProjectField, getSeasons,
+  getProjectField,
+  getProjectStatistic,
+  getSeasons,
   invest,
 } from '../hooks'
 import { useWallet } from '../wallet'
-import { toWei } from '../web3-utils'
+import { fromWei, toWei } from '../web3-utils'
 import Season from './Season'
 import { projectStates, projectStatesNames } from '../enum/projectState'
+import { secondsToDate } from '../utils'
 
 const ProjectDetails = (props) => {
   const { web3 } = useWallet()
   const { baseProjectInfo, loading } = getProjectBaseInfo(props.address)
+  const { statistic } = getProjectStatistic(props.address)
+  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
   const creationBlock = loadFiled("creationBlock")
   const state = loadFiled("State")
   const activeVoting = loadFiled("ActiveVoting")
@@ -99,6 +104,10 @@ const ProjectDetails = (props) => {
             <Table.Cell>{creationBlock}</Table.Cell>
           </Table.Row>
           <Table.Row>
+            <Table.Cell>Date of Creation</Table.Cell>
+            <Table.Cell>{statistic && creationDate.toUTCString()}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
             <Table.Cell>Active Voting</Table.Cell>
             <Table.Cell>{activeVoting}</Table.Cell>
           </Table.Row>
@@ -123,7 +132,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>Price</Table.Cell>
-            <Table.Cell>{baseProjectInfo.price}</Table.Cell>
+            <Table.Cell>{baseProjectInfo.price && fromWei(baseProjectInfo.price)} ETH</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Transfers</Table.Cell>

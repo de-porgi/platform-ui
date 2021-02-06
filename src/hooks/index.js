@@ -69,7 +69,7 @@ export const getProjectBaseInfo = (address) => {
   )
 
   return {
-    baseProjectInfo: (!res.error && res.data &&
+    baseProjectInfo: res.data &&
       {
         owner: res.data[0],
         projectName: res.data[1],
@@ -78,8 +78,25 @@ export const getProjectBaseInfo = (address) => {
         decimals: res.data[4],
         activeSeason: res.data[5],
         price: res.data[6]
-      }
-    ) || [],
+      } || [],
+    error: res.error,
+    loading: !res.error && !res.data
+  }
+}
+
+export const getProjectStatistic = (address) => {
+  const res = useSWR(
+    [contractAddresses.porgi, "GetProjectStatistic", address],
+    contractCaller(PorgiABI)
+  )
+
+  return {
+    statistic: res.data &&
+      {
+        State: res.data["State"],
+        Index: res.data["Index"],
+        TimeCreated: res.data["TimeCreated"],
+      } || [],
     error: res.error,
     loading: !res.error && !res.data
   }
