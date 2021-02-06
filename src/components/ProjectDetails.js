@@ -16,6 +16,7 @@ import {
 import { useWallet } from '../wallet'
 import { toWei } from '../web3-utils'
 import Season from './Season'
+import { projectStates, projectStatesNames } from '../enum/projectState'
 
 const ProjectDetails = (props) => {
   const { web3 } = useWallet()
@@ -91,7 +92,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{state}</Table.Cell>
+            <Table.Cell>{state && projectStatesNames[state]}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
@@ -131,7 +132,7 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      {baseProjectInfo.state === (2).toString() &&
+      {state === projectStates.PresaleInProgress &&
         <Form onSubmit={onSubmit}>
           <Form.Field required>
             <label> Ether Count </label>
