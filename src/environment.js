@@ -5,7 +5,7 @@ const infuraAPI = 'wss://mainnet.infura.io/ws/v3/' + infuraProjectId
 
 export const contractAddresses = {
   aave: '0xf8aC10E65F2073460aAD5f28E1EABE807DC287CF',
-  porgi: '0x0c724a3be0866a44354F01469D8eAf7D8b01950e',
+  porgi: '0x2E809C1aB3d056E3f39c55C7A7F271FD44Ab2344',
 }
 
 export const defaultConfig = {
