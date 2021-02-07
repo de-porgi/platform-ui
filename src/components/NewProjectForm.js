@@ -146,7 +146,7 @@ const NewProjectForm = () => {
             <label> Token Symbol </label>
             <input
               placeholder="e.g. Hate Apple"
-              maxLength="3"
+              maxLength="4"
               {...symbol}
             />
           </Form.Field>
