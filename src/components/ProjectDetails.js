@@ -218,7 +218,7 @@ const ProjectDetails = ({ address }) => {
         />
       </Segment>
       <Segment>
-        {!isOwner && state === projectStates.PresaleInProgress &&
+        {state === projectStates.PresaleInProgress &&
           <Form onSubmit={async () => {
             setLoading(true)
             try {
@@ -248,7 +248,7 @@ const ProjectDetails = ({ address }) => {
           </Form>
         }
 
-        {!isOwner && state === projectStates.ProjectCanceled &&
+        {state === projectStates.ProjectCanceled &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {
@@ -260,8 +260,7 @@ const ProjectDetails = ({ address }) => {
             }
           }}>
             Withdraw Funds
-        </Button>
-        }
+        </Button>}
       </Segment>
     </Segment.Group>
   )
