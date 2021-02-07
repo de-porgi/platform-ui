@@ -11,7 +11,8 @@ import {
   Item,
   Button,
   Placeholder,
-  Form
+  Form,
+  Label
 } from 'semantic-ui-react'
 import {
   getProjectBaseInfo,
@@ -86,6 +87,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
         </Statistic.Group>
+        <Divider />
         <Statistic.Group widths="three">
           <Statistic>
             <Statistic.Value>{fromWei(balance)} ETH </Statistic.Value>
@@ -141,10 +143,10 @@ const ProjectDetails = ({ address }) => {
         </p>
         </Container>
       </Segment>
-      <Segment>
+      <Segment textAlign="center">
         <Header as="h2">
           Presale
-          <Header.Subheader> {state === projectInnerStates.PresaleInProgress && "Active"} </Header.Subheader>
+          <Label color='teal' pointing='left'>{state === projectInnerStates.PresaleInProgress && "Active"}</Label>
         </Header>
         <Statistic.Group widths="four" size="mini">
           <Statistic>
@@ -165,7 +167,7 @@ const ProjectDetails = ({ address }) => {
           </Statistic>
         </Statistic.Group>
         {isOwner && state === projectInnerStates.PresaleIsNotStarted &&
-          <Button primary onClick={async () => {
+          <Button primary fluid onClick={async () => {
             setLoading(true)
             try {
               await startPresale(web3, address)
@@ -180,7 +182,7 @@ const ProjectDetails = ({ address }) => {
         }
 
         {isOwner && state === projectInnerStates.PresaleFinishing &&
-          <Button primary onClick={async () => {
+          <Button negative fluid onClick={async () => {
             setLoading(true)
             try {
               await finishPresale(web3, address)
@@ -239,7 +241,6 @@ const ProjectDetails = ({ address }) => {
                 onChange={(e, { value }) => setWeiCount(value)}
               />
               <Form.Button
-                disabled={!web3}
                 content='Invest'
                 fluid
                 positive
@@ -249,7 +250,7 @@ const ProjectDetails = ({ address }) => {
         }
 
         {state === projectInnerStates.ProjectCanceled &&
-          <Button primary onClick={async () => {
+          <Button fluid primary onClick={async () => {
             setLoading(true)
             try {
               await withdraw(web3, address)
@@ -329,7 +330,7 @@ const Voting = ({ address, project }) => {
     <Item.Extra>
       <Button.Group>
         {isOwner && state === projectInnerStates.SeriesFinishing &&
-          <Button primary onClick={async () => {
+          <Button primary fluid onClick={async () => {
             setLoading(true)
             try {
               await startVoting(web3, address)
@@ -344,7 +345,7 @@ const Voting = ({ address, project }) => {
         }
 
         {isOwner && state === projectInnerStates.VotingFinishing &&
-          <Button primary onClick={async () => {
+          <Button primary fluid onClick={async () => {
             setLoading(true)
             try {
               await finishVoting(web3, address)

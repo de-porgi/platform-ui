@@ -19,11 +19,11 @@ const Projects = () => {
     let options = []
     for (const state in projectStatesNames) {
       options = [...options,
-        {
-          key: state,
-          text: projectStatesNames[state],
-          value: state,
-        }
+      {
+        key: state,
+        text: projectStatesNames[state],
+        value: state,
+      }
       ]
     }
     return options
@@ -53,7 +53,7 @@ const Projects = () => {
           {projects.map((address, i) => (
             <ProjectCard key={i} address={address} />
           ))}
-        </Card.Group> || <Header as="h2" textAlign={"center"}>Not Found</Header>
+        </Card.Group> || <Header as="h2" textAlign={"center"}>No Projects Currently Available</Header>
       ) : (<></>)}
     </Segment>
   )
