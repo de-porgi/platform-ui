@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tab, Segment, Card } from 'semantic-ui-react'
+import { Tab, Segment, Card, Message } from 'semantic-ui-react'
 
 import ProjectCard from '../components/ProjectCard'
 import WalletWarning from '../components/WalletWarning'
@@ -36,7 +36,7 @@ const Account = () => {
         },
         {
           menuItem: "Invested Projects",
-          render: () => { }
+          render: () => (<Message warning> Waiting for integration with 'The Graph'  to allow indexing for such case</Message>)
         }
       ]} />
     </Segment>

@@ -53,8 +53,11 @@ export const getProjectField = (address, field, ...args) => {
     contractCaller(ProjectABI)
   )
 
+  if (error) {
+    console.log(error)
+  }
   return {
-    val: data || (!error && "Loading...") || "Error",
+    val: data,
     error: error,
     loading: !error && !data
   }
