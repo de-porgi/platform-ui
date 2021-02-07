@@ -5,7 +5,7 @@ import ProjectCard from '../components/ProjectCard'
 import { getProjects } from '../hooks'
 
 const Projects = () => {
-  const { projects, loading } = getProjects(1)
+  const { projects, loading } = getProjects(2)
 
   return (
     <Segment loading={loading} placeholder={loading}>
