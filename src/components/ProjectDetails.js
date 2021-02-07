@@ -36,21 +36,23 @@ import { secondsToDate } from '../utils'
 
 const ProjectDetails = ({ address }) => {
   const { web3, account } = useWallet()
-  const { baseProjectInfo, infoLoading } = getProjectBaseInfo(address)
-  const { statistic, statLoading } = getProjectStatistic(address)
+  const { baseProjectInfo } = getProjectBaseInfo(address)
+  const { statistic } = getProjectStatistic(address)
   const { firstSeason } = getSeasons(address)
 
-  const { val: creationBlock, loading: cbLoading } = getProjectField(address, "creationBlock")
-  const { val: totalSupply, loading: tsLoading } = getProjectField(address, "totalSupply")
-  const { val: state, loading: sLoading } = getProjectField(address, "State")
+  const { val: creationBlock } = getProjectField(address, "creationBlock")
+  const { val: totalSupply } = getProjectField(address, "totalSupply")
+  const { val: state } = getProjectField(address, "State")
   const balance = getProjectBalance(address)
 
   const [error, setError] = useState("")
-  const [callLoading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [etherCount, setWeiCount] = useState("1")
 
-  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
-  const loading = infoLoading || callLoading || statLoading || cbLoading || tsLoading || sLoading
+  // TODO Loading have to be handled by totalSupplyupper component
+  if (!firstSeason || !statistic || !baseProjectInfo || !creationBlock || !totalSupply || !state || loading) {
+    return <Segment placeholder loading />
+  }
 
   if (error) {
     return (
@@ -61,11 +63,7 @@ const ProjectDetails = ({ address }) => {
     )
   }
 
-  // TODO Loading have to be handled by upper component
-  if (loading) {
-    return <Segment placeholder loading />
-  }
-
+  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
   const isOwner = baseProjectInfo.owner === account
   return (
     <Segment.Group>
@@ -99,7 +97,7 @@ const ProjectDetails = ({ address }) => {
         <Divider />
         <Statistic.Group widths="two">
           <Statistic>
-            <Statistic.Value>{creationBlock} </Statistic.Value>
+            <Statistic.Value> {creationBlock} </Statistic.Value>
             <Statistic.Label> Created On Block </Statistic.Label>
           </Statistic>
           <Statistic>
