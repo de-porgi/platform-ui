@@ -204,7 +204,7 @@ const ProjectDetails = ({ address }) => {
                 return (
                   <Item.Group relaxed divided>
                     {firstSeason.Series.map((series, i) => {
-                      return <Series key={i} series={series} i={i} />
+                      return <Series key={i} project={address} series={series} i={i} />
                     })}
                   </Item.Group>
                 )
@@ -267,7 +267,7 @@ const ProjectDetails = ({ address }) => {
 }
 
 
-const Series = ({ series, i }) => {
+const Series = ({ series, i, project }) => {
   return (
     <Item>
       <Item.Content>
@@ -283,13 +283,13 @@ const Series = ({ series, i }) => {
           Nullam dictum felis eu pede link mollis pretium. Integer tincidunt. Cras
           dapibus. Vivamus eslementum semper nisi.
          </Item.Description>
-        <Voting address={series.Vote} />
+        <Voting project={project} address={series.Vote} />
       </Item.Content>
     </Item>
   )
 }
 
-const Voting = ({ address }) => {
+const Voting = ({ address, project }) => {
   if (isEmptyAddress(address)) {
     return <></>
   }
@@ -297,8 +297,8 @@ const Voting = ({ address }) => {
   const { web3, account } = useWallet()
   const { voting } = getVoting(address)
   const { accountVote } = getVote(address, account)
-  const { baseProjectInfo } = getProjectBaseInfo(address)
-  const { val: state } = getProjectField(address, "State")
+  const { baseProjectInfo } = getProjectBaseInfo(project)
+  const { val: state } = getProjectField(project, "State")
 
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
