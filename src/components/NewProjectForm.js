@@ -18,22 +18,22 @@ const NewProjectForm = () => {
   const { web3 } = useWallet()
   const history = useHistory()
 
-  const { input: name } = useInput("Hate Google")
-  const { input: token } = useInput("Hate Google")
-  const { input: symbol } = useInput("Hate Google")
+  const { input: name } = useInput("Aave")
+  const { input: token } = useInput("AAVE")
+  const { input: symbol } = useInput("AAVE")
 
   const { input: decimals } = useInput(18)
   const { input: price } = useInput("1")
   const { input: distribution } = useInput(20)
-  const { input: presaleDuration } = useInput(100)
+  const { input: presaleDuration } = useInput(60)
   const { input: minCap } = useInput(10000000000)
 
   const [serieses, setSerieses] = useState([
     {
-      Duration: 100,
+      Duration: 30,
       StakeUnlock: 30,
       Vote: {
-        Duration: 100,
+        Duration: 60,
         Filters: [{
           Schema: 2,
           Value: 50,
@@ -41,10 +41,10 @@ const NewProjectForm = () => {
       }
     },
     {
-      Duration: 100,
+      Duration: 30,
       StakeUnlock: 70,
       Vote: {
-        Duration: 100,
+        Duration: 60,
         Filters: [{
           Schema: 2,
           Value: 50,
@@ -72,10 +72,10 @@ const NewProjectForm = () => {
       return
     }
 
-    serieses.forEach(s => {
-      s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
-      s.Vote.Duration *= 24 * 60 * 60 // days to sec
-    })
+    // serieses.forEach(s => {
+    //   s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
+    //   s.Vote.Duration *= 24 * 60 * 60 // days to sec
+    // })
 
     const project = {
       ProjectName: name.value,
@@ -86,7 +86,7 @@ const NewProjectForm = () => {
         Presale: {
           TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
-          Duration: presaleDuration.value * 24 * 60 * 60, // days to sec
+          Duration: presaleDuration.value, // days to sec
           MinCap: minCap.value
         },
         Series: serieses,
