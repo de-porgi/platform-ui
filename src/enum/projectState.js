@@ -1,4 +1,4 @@
-export const projectStates = {
+export const projectInnerStates = {
   Unknown : "0",
   PresaleIsNotStarted: "1",
   PresaleInProgress: "2",
@@ -13,7 +13,7 @@ export const projectStates = {
   ProjectCanceled: "11"
 }
 
-export const projectStatesNames = {
+export const projectInnerStatesNames = {
   "0": "Unknown",
   "1": "Presale is not started",
   "2": "Presale in progress",
@@ -28,3 +28,20 @@ export const projectStatesNames = {
   "11": "Project canceled"
 }
 
+export const projectStates = {
+  None : "0",
+  New: "1",
+  Presale: "2",
+  InProgress: "3",
+  Finished: "4",
+  Canceled: "5"
+}
+
+export const projectStatesNames = {
+  "0": "None",
+  "1": "New",
+  "2": "Presale",
+  "3": "InProgress",
+  "4": "Finished",
+  "5": "Canceled"
+}

@@ -18,7 +18,7 @@ import {
 import { useWallet } from '../wallet'
 import { fromWei, toWei } from '../web3-utils'
 import Season from './Season'
-import { projectStates, projectStatesNames } from '../enum/projectState'
+import { projectInnerStates, projectInnerStatesNames } from '../enum/projectState'
 import { secondsToDate } from '../utils'
 
 const ProjectDetails = (props) => {
@@ -97,7 +97,7 @@ const ProjectDetails = (props) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>State</Table.Cell>
-            <Table.Cell>{state && projectStatesNames[state]}</Table.Cell>
+            <Table.Cell>{state && projectInnerStatesNames[state]}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Creation Block</Table.Cell>
@@ -141,7 +141,7 @@ const ProjectDetails = (props) => {
         </Table.Body>
       </Table>
 
-      {state === projectStates.PresaleInProgress &&
+      {state === projectInnerStates.PresaleInProgress &&
         <Form onSubmit={onSubmit}>
           <Form.Field required>
             <label> Ether Count </label>
