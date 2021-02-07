@@ -65,6 +65,11 @@ const NewProjectForm = () => {
       return
     }
 
+    if (fullStakeUnlock > 100) {
+      alert("Error: Sum of Series Portion(%) bigger then 100%")
+      return
+    }
+
     serieses.forEach(s => {
       s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
       s.Vote.Duration *= 24 * 60 * 60 // days to sec
@@ -290,7 +295,7 @@ const SeriesForm = ({ series, number, setSeries }) => {
         onChange={onChangeVoteFilter}
       />
       <Form.Field required>
-        <label> Vote Filter Value </label>
+        <label> Vote Filter Value(%) </label>
         <Form.Input
           type="number"
           name="Value"
