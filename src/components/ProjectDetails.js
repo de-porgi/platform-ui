@@ -27,7 +27,7 @@ import {
   startVoting,
   finishVoting,
   vote,
-  getVote,
+  getAccountVote,
   isVotingOpened
 } from '../hooks'
 import { useWallet } from '../wallet'
@@ -295,7 +295,7 @@ const Voting = ({ address, project }) => {
 
   const { web3, account } = useWallet()
   const { voting } = getVoting(address)
-  const { accountVote } = getVote(address, account)
+  const { accountVote } = getAccountVote(address, account)
   const { opened } = isVotingOpened(address)
   const { baseProjectInfo } = getProjectBaseInfo(project)
   const { val: state } = getProjectField(project, "State")
