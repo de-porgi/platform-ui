@@ -4,9 +4,10 @@ import {
   Button,
   Header,
   Segment,
-  Icon
+  Message
 } from 'semantic-ui-react'
 
+import WalletWarning from './WalletWarning'
 import { useWallet } from '../wallet'
 import { newProject } from '../hooks'
 import { toWei } from 'web3-utils'
@@ -53,6 +54,7 @@ const NewProjectForm = () => {
   ])
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const onSubmit = async () => {
     let fullStakeUnlock = 0
@@ -92,124 +94,135 @@ const NewProjectForm = () => {
     }
 
     setLoading(true)
-    await newProject(web3, project)
+    try {
+      await newProject(web3, project)
+    } catch (e) {
+      setLoading(false)
+      setError(e.message)
+      return
+    }
+
     history.push("/")
+  }
+
+  if (!web3) {
+    return <WalletWarning />
+  }
+
+  if (error) {
+    return (
+      <Message error
+        header="Failed to create new project. Please retry!"
+        list={[error]}
+      />
+    )
+  }
+
+  // TODO Loading have to be handled by upper component
+  if (loading) {
+    return <Segment placeholder loading />
   }
 
   return (
     <Form onSubmit={onSubmit}>
-      {!web3 || loading ? (
-        <Segment placeholder loading={loading}>
-          {!web3 ? (
-            <Header icon>
-              <Icon name="ethereum" />
-              Connect to your Ethereum wallet first!
-            </Header>
-          ) : <></>}
-
+      <Segment.Group>
+        <Segment>
+          <Header as="h3"> Configure Project Info </Header>
+          <Form.Field>
+            <label> Project Name </label>
+            <input
+              placeholder="e.g. Hate Google"
+              {...name}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Name </label>
+            <input
+              placeholder="e.g. Hate Facebook"
+              {...token}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Symbol </label>
+            <input
+              placeholder="e.g. Hate Apple"
+              {...symbol}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Decimals </label>
+            <input
+              type="number"
+              placeholder="42"
+              {...decimals}
+            />
+          </Form.Field>
         </Segment>
-      ) : (
-          <>
-            <Segment.Group>
-              <Segment>
-                <Header as="h3"> Configure Project Info </Header>
-                <Form.Field>
-                  <label> Project Name </label>
-                  <input
-                    placeholder="e.g. Hate Google"
-                    {...name}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Name </label>
-                  <input
-                    placeholder="e.g. Hate Facebook"
-                    {...token}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Symbol </label>
-                  <input
-                    placeholder="e.g. Hate Apple"
-                    {...symbol}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Decimals </label>
-                  <input
-                    type="number"
-                    placeholder="42"
-                    {...decimals}
-                  />
-                </Form.Field>
-              </Segment>
-              <Segment>
-                <Header as="h3"> Token Presale Parameters </Header>
-                <Form.Field>
-                  <label> Price(per ETH) </label>
-                  <input
-                    type="number"
-                    placeholder="1000"
-                    {...price}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Distribution for Project(%) </label>
-                  <input
-                    type="number"
-                    placeholder="30"
-                    {...distribution}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Duration(days) </label>
-                  <input
-                    type="number"
-                    placeholder="14"
-                    {...presaleDuration}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Minimal Required Capitalization </label>
-                  <input
-                    type="number"
-                    placeholder="100000"
-                    {...minCap}
-                  />
-                </Form.Field>
-              </Segment>
-              <Segment>
-                <Header as="h3"> Configure Initial Season </Header>
-                <Segment.Group>
-                  {serieses.map((series, i) => (
-                    <SeriesForm key={i} number={i+1} series={series} setSeries={series => {
-                      if (series) {
-                        setSerieses([
-                          ...serieses.slice(0, i),
-                          series,
-                          ...serieses.slice(i + 1)
-                        ])
-                      } else {
-                        setSerieses([
-                          ...serieses.slice(0, i),
-                          ...serieses.slice(i + 1)
-                        ])
-                      }
-                    }} />
-                  ))}
-                  <Segment textAlign="center">
-                    <Button type="button" circular icon="plus" color="green" onClick={() => setSerieses(serieses => [...serieses, { ...serieses[0] }])} />
-                  </Segment>
-                </Segment.Group>
-              </Segment>
-              <Segment>
-                <Form.Button fluid primary size="large">
-                  Submit
-                </Form.Button>
-              </Segment>
-            </Segment.Group>
-          </>
-        )}
+        <Segment>
+          <Header as="h3"> Token Presale Parameters </Header>
+          <Form.Field>
+            <label> Price(per ETH) </label>
+            <input
+              type="number"
+              placeholder="1000"
+              {...price}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Distribution for Project(%) </label>
+            <input
+              type="number"
+              placeholder="30"
+              {...distribution}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Duration(days) </label>
+            <input
+              type="number"
+              placeholder="14"
+              {...presaleDuration}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Minimal Required Capitalization </label>
+            <input
+              type="number"
+              placeholder="100000"
+              {...minCap}
+            />
+          </Form.Field>
+        </Segment>
+        <Segment>
+          <Header as="h3"> Configure Initial Season </Header>
+          <Segment.Group>
+            {serieses.map((series, i) => (
+              <SeriesForm key={i} number={i+1} series={series} setSeries={series => {
+                if (series) {
+                  setSerieses([
+                    ...serieses.slice(0, i),
+                    series,
+                    ...serieses.slice(i + 1)
+                  ])
+                } else {
+                  setSerieses([
+                    ...serieses.slice(0, i),
+                    ...serieses.slice(i + 1)
+                  ])
+                }
+              }} />
+            ))}
+            <Segment textAlign="center">
+              <Button type="button" circular icon="plus" color="green" onClick={() => setSerieses(serieses => [...serieses, { ...serieses[0] }])} />
+            </Segment>
+          </Segment.Group>
+        </Segment>
+        <Segment>
+          <Form.Button fluid primary size="large">
+            Submit
+            </Form.Button>
+        </Segment>
+      </Segment.Group>
     </Form>
   )
 }

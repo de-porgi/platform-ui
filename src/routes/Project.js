@@ -1,6 +1,7 @@
 import React from 'react'
-import ProjectDetails from '../components/ProjectDetails'
 import { useParams } from 'react-router-dom'
+
+import ProjectDetails from '../components/ProjectDetails'
 
 const Project = () => {
   const { address } = useParams()
