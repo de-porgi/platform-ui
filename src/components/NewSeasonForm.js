@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { addNextSeasons, useInput } from '../hooks'
-import { Form, Header, Segment } from 'semantic-ui-react'
+import { Divider, Form, Header, Segment } from 'semantic-ui-react'
 import { useWallet } from '../wallet'
 import { useHistory } from 'react-router-dom'
 import { NewNextSeason } from './NewNextSeason'
@@ -88,30 +88,27 @@ export const NewSeasonForm = ({ address }) => {
 
   return (
     <Form onSubmit={onSubmit}>
-      <Segment.Group>
-        <Segment>
-          <Header as="h2" textAlign={"center"}> New Season </Header>
+      <Header as="h2" textAlign={"center"}> New Season </Header>
 
-          <NewNextSeason
-            serieses={serieses}
-            setSerieses={setSerieses}
-            tokensEmissionPercent={tokensEmissionPercent}
-            emissions={emissions}
-            ownerTokensPercent={ownerTokensPercent}
-            timeBetweenEmissions={timeBetweenEmissions}
-          />
-        </Segment>
-        <Segment>
-          {web3 &&
-          <Form.Button fluid primary size="large">
-            Submit
-          </Form.Button> ||
-          <Form.Button fluid primary disabled size="large">
-            Connect your account
-          </Form.Button>
-          }
-        </Segment>
-      </Segment.Group>
+      <NewNextSeason
+        serieses={serieses}
+        setSerieses={setSerieses}
+        tokensEmissionPercent={tokensEmissionPercent}
+        emissions={emissions}
+        ownerTokensPercent={ownerTokensPercent}
+        timeBetweenEmissions={timeBetweenEmissions}
+      />
+
+      <Divider />
+
+      {web3 &&
+      <Form.Button fluid primary size="large">
+        Submit
+      </Form.Button> ||
+      <Form.Button fluid primary disabled size="large">
+        Connect your account
+      </Form.Button>
+      }
     </Form>
   )
 }

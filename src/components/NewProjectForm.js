@@ -167,11 +167,9 @@ const NewProjectForm = () => {
           presaleDuration={presaleDuration}
           minCap={minCap}
         />
-        <Segment>
-          <Form.Button fluid primary size="large">
-            Submit
-          </Form.Button>
-        </Segment>
+        <Form.Button fluid primary size="large">
+          Submit
+        </Form.Button>
       </Segment.Group>
     </Form>
   )
