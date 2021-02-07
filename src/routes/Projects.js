@@ -15,7 +15,6 @@ import { projectStatesNames } from '../enum/projectState'
 const Projects = () => {
   const [state, setState] = useState(1)
   const { projects, loading } = getProjects(state)
-  console.log(projects)
 
   let getOptions = () => {
     let options = []
