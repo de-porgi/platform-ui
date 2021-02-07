@@ -105,6 +105,80 @@ export default [
 	},
 	{
 		"inputs": [],
+		"name": "GetVotingInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint64",
+						"name": "TimestampStart",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint256",
+						"name": "BlockStart",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TotalYes",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TotalNo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "TotalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum Common.VoteResult",
+						"name": "Result",
+						"type": "uint8"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint64",
+								"name": "Duration",
+								"type": "uint64"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint8",
+										"name": "Schema",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint64",
+										"name": "Value",
+										"type": "uint64"
+									}
+								],
+								"internalType": "struct Common.VoteFilter[]",
+								"name": "Filters",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct Common.VoteProperty",
+						"name": "Property",
+						"type": "tuple"
+					}
+				],
+				"internalType": "struct Voting.VotingInfo",
+				"name": "info",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "IsOpen",
 		"outputs": [
 			{
