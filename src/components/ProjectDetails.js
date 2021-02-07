@@ -137,7 +137,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Presale Token Price </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.MinCap && toWei(firstSeason.Presale.MinCap)} ETH </Statistic.Value>
+            <Statistic.Value> {firstSeason.Presale.MinCap && firstSeason.Presale.MinCap} ETH </Statistic.Value>
             <Statistic.Label> Presale Soft Cap </Statistic.Label>
           </Statistic>
           <Statistic>
