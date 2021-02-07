@@ -359,8 +359,8 @@ const Voting = ({ address, project }) => {
         }
 
         <Button
-          disabled={!opened || accountVote === 2}
-          basic
+          disabled={!opened || accountVote === "2"}
+          basic={accountVote !== "2"}
           primary
           content="Yes"
           icon="thumbs up outline"
@@ -368,7 +368,7 @@ const Voting = ({ address, project }) => {
             basic: true,
             color: "blue",
             pointing: "left",
-            content: `${fromWei(voting.TotalNo)} ${baseProjectInfo.symbol}`,
+            content: `${fromWei(voting.TotalYes)} ${baseProjectInfo.symbol}`,
           }}
           onClick={async () => {
             setLoading(true)
@@ -383,8 +383,8 @@ const Voting = ({ address, project }) => {
         />
         <Button.Or />
         <Button
-          disabled={!opened || accountVote === 1}
-          basic
+          disabled={!opened || accountVote === "1"}
+          basic={accountVote !== "1"}
           secondary
           content="No"
           icon="thumbs down outline"
