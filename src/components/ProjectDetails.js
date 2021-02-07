@@ -271,7 +271,7 @@ const Series = ({ series, i, project }) => {
     <Item>
       <Item.Content>
         <Item.Header> Series {i + 1} </Item.Header>
-        <Item.Meta> Unlocks {series.StakeUnlock}% of investments, {Math.floor(series.Duration / (3600 * 24))} days </Item.Meta>
+        <Item.Meta> Unlocks {series.StakeUnlock}% of investments for the project once started for {Math.floor(series.Duration / (3600 * 24))} days. </Item.Meta>
         <Item.Description>
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
           ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
