@@ -125,14 +125,14 @@ export const getVoting = address => {
   }
 }
 
-export const getVote = (address, voter) => {
+export const getAccountVote = (address, voter) => {
   const { data, error } = useSWR(
     [address, "Votes", voter],
     contractCaller(VotingABI)
   )
 
   return {
-    voting: data,
+    accountVote: data,
     error: error,
     loading: !error && !data
   }
