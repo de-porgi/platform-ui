@@ -156,7 +156,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Presale Soft Cap </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.Duration} </Statistic.Value>
+            <Statistic.Value> {Math.floor(firstSeason.Presale.Duration / (3600 * 24))} days</Statistic.Value>
             <Statistic.Label> Presale Duration </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -273,7 +273,7 @@ const Series = ({ series, i }) => {
     <Item>
       <Item.Content>
         <Item.Header> Series {i + 1} </Item.Header>
-        <Item.Meta> Unlocks {series.StakeUnlock}% of investments, {series.Duration} days </Item.Meta>
+        <Item.Meta> Unlocks {series.StakeUnlock}% of investments, {Math.floor(series.Duration / (3600 * 24))} days </Item.Meta>
         <Item.Description>
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
           ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
