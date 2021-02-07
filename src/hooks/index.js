@@ -5,7 +5,7 @@ import PorgiABI from '../abi/porgi'
 import ProjectABI from '../abi/project'
 import VotingABI from '../abi/voting'
 import { getMainAccount, getWeb3, filterBalanceValue } from '../web3-utils'
-import { projectStates } from '../enum/projectState'
+import { projectInnerStates } from '../enum/projectState'
 
 export const getProjects = state => {
   const { data, error } = useSWR(
@@ -140,7 +140,7 @@ export const getVote = (address, voter) => {
 
 export const invest = async (web3, address, amount) => {
   const state = await contractCaller(ProjectABI)(address, 'State')
-  if (state !== projectStates.PresaleInProgress) {
+  if (state !== projectInnerStates.PresaleInProgress) {
     return new Error("Contract is not in PresaleInProgress state anymore")
   }
 
