@@ -139,7 +139,7 @@ export const getVote = (address, voter) => {
 }
 
 export const invest = async (web3, address, amount) => {
-  const state = await contractCaller(web3, ProjectABI)(address, 'State')
+  const state = await contractCaller(ProjectABI)(address, 'State')
   if (state !== projectStates.PresaleInProgress) {
     return new Error("Contract is not in PresaleInProgress state anymore")
   }
