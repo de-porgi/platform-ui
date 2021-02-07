@@ -3,7 +3,6 @@ import {
   Header,
   Icon,
   Segment,
-  Accordion,
   Message,
   Statistic,
   Divider,
@@ -11,42 +10,47 @@ import {
   Tab,
   Item,
   Button,
-  Placeholder
+  Placeholder,
+  Form
 } from 'semantic-ui-react'
 import {
   getProjectBaseInfo,
   getProjectField,
   getProjectStatistic,
+  getProjectBalance,
   getSeasons,
   getVoting,
   withdraw,
   startPresale,
   finishPresale,
   invest,
-  vote
+  startVoting,
+  finishVoting,
+  vote,
+  getVote
 } from '../hooks'
 import { useWallet } from '../wallet'
-import { fromWei, isEmptyAddress } from '../web3-utils'
-import Season from './Season'
-import { projectStatesNames } from '../enum/projectState'
+import { fromWei, toWei, isEmptyAddress } from '../web3-utils'
+import { projectStates, projectStatesNames } from '../enum/projectState'
 import { secondsToDate } from '../utils'
 
 const ProjectDetails = ({ address }) => {
   const { web3, account } = useWallet()
   const { baseProjectInfo, infoLoading } = getProjectBaseInfo(address)
   const { statistic, statLoading } = getProjectStatistic(address)
-  const { firstSeason, nextSeasons } = getSeasons(address)
+  const { firstSeason } = getSeasons(address)
 
-  const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
   const { val: creationBlock, loading: cbLoading } = getProjectField(address, "creationBlock")
   const { val: totalSupply, loading: tsLoading } = getProjectField(address, "totalSupply")
   const { val: state, loading: sLoading } = getProjectField(address, "State")
+  const balance = getProjectBalance(address)
 
   const [error, setError] = useState("")
   const [callLoading, setLoading] = useState(false)
+  const [etherCount, setWeiCount] = useState("1")
 
   const creationDate = statistic && secondsToDate(statistic.TimeCreated)
-  const loading = infoLoading || callLoading || statLoading || rLoading || cbLoading || tsLoading || sLoading
+  const loading = infoLoading || callLoading || statLoading || cbLoading || tsLoading || sLoading
 
   if (error) {
     return (
@@ -62,6 +66,7 @@ const ProjectDetails = ({ address }) => {
     return <Segment placeholder loading />
   }
 
+  const isOwner = baseProjectInfo.owner === account
   return (
     <Segment.Group>
       <Segment>
@@ -83,7 +88,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value>{raised && fromWei(raised)} ETH </Statistic.Value>
+            <Statistic.Value>{fromWei(balance)} ETH </Statistic.Value>
             <Statistic.Label> Raized </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -139,6 +144,7 @@ const ProjectDetails = ({ address }) => {
       <Segment>
         <Header as="h2">
           Presale
+          <Header.Subheader> {state === projectStates.PresaleInProgress && "Active"} </Header.Subheader>
         </Header>
         <Statistic.Group widths="four" size="mini">
           <Statistic>
@@ -158,6 +164,35 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token reserve for the project </Statistic.Label>
           </Statistic>
         </Statistic.Group>
+        {isOwner && state === projectStates.PresaleIsNotStarted &&
+          <Button primary onClick={async () => {
+            setLoading(true)
+            try {
+              await startPresale(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Start Presale
+          </Button>
+        }
+
+        {isOwner && state === projectStates.PresaleFinishing &&
+          <Button primary onClick={async () => {
+            setLoading(true)
+            try {
+              await finishPresale(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Finish Presale
+          </Button>
+        }
       </Segment>
       <Segment>
         <Tab
@@ -182,8 +217,52 @@ const ProjectDetails = ({ address }) => {
           ]}
         />
       </Segment>
+      <Segment>
+        {!isOwner && state === projectStates.PresaleInProgress &&
+          <Form onSubmit={async () => {
+            setLoading(true)
+            try {
+              await invest(web3, address, toWei(etherCount))
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            <Form.Field required>
+              <label> Ether Count </label>
+              <Form.Input
+                placeholder='Ether Count'
+                name='ether'
+                type='number'
+                value={etherCount}
+                onChange={(e, { value }) => setWeiCount(value)}
+              />
+              <Form.Button
+                disabled={!web3}
+                content='Invest'
+                fluid
+                positive
+              />
+            </Form.Field>
+          </Form>
+        }
 
-
+        {!isOwner && state === projectStates.ProjectCanceled &&
+          <Button primary onClick={async () => {
+            setLoading(true)
+            try {
+              await withdraw(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Withdraw Funds
+        </Button>
+        }
+      </Segment>
     </Segment.Group>
   )
 }
@@ -218,11 +297,14 @@ const Voting = ({ address }) => {
 
   const { web3, account } = useWallet()
   const { voting } = getVoting(address)
+  const { accountVote } = getVote(address, account)
+  const { baseProjectInfo } = getProjectBaseInfo(address)
+  const { val: state } = getProjectField(address, "State")
 
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  if (!voting || loading) {
+  if (!voting || !baseProjectInfo || !state || loading) {
     return (
       <Placeholder fluid>
         <Placeholder.Header image>
@@ -242,12 +324,43 @@ const Voting = ({ address }) => {
     )
   }
 
+  const isOwner = baseProjectInfo.owner === account
   const open = voting.Result === voting.Result.None && Date.now().getTime() / 1000 < (voting.TimestampStart + voting.Property.Duration) && voting.TimestampStart !== 0
   return (
     <Item.Extra>
       <Button.Group>
+        {isOwner && state === projectStates.SeriesFinishing &&
+          <Button primary onClick={async () => {
+            setLoading(true)
+            try {
+              await startVoting(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Start Voting
+          </Button>
+        }
+
+        {isOwner && state === projectStates.VotingFinishing &&
+          <Button primary onClick={async () => {
+            setLoading(true)
+            try {
+              await finishVoting(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Finish Voting
+          </Button>
+        }
+
         <Button
-          disabled={!open}
+          disabled={!open || accountVote === 2}
           basic
           primary
           content="Yes"
@@ -271,7 +384,7 @@ const Voting = ({ address }) => {
         />
         <Button.Or />
         <Button
-          disabled={!open}
+          disabled={!open || accountVote === 1}
           basic
           secondary
           content="No"
