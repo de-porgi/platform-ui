@@ -27,7 +27,8 @@ import {
   startVoting,
   finishVoting,
   vote,
-  getVote
+  getVote,
+  isVotingOpened
 } from '../hooks'
 import { useWallet } from '../wallet'
 import { fromWei, toWei, isEmptyAddress } from '../web3-utils'
@@ -270,7 +271,7 @@ const Series = ({ series, i, project }) => {
     <Item>
       <Item.Content>
         <Item.Header> Series {i + 1} </Item.Header>
-        <Item.Meta> Unlocks {series.StakeUnlock}% of investments, {Math.floor(series.Duration / (3600 * 24))} days </Item.Meta>
+        <Item.Meta> Unlocks {series.StakeUnlock}% of investments for the project once started for {Math.floor(series.Duration / (3600 * 24))} days. </Item.Meta>
         <Item.Description>
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
           ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
@@ -295,6 +296,7 @@ const Voting = ({ address, project }) => {
   const { web3, account } = useWallet()
   const { voting } = getVoting(address)
   const { accountVote } = getVote(address, account)
+  const { opened } = isVotingOpened(address)
   const { baseProjectInfo } = getProjectBaseInfo(project)
   const { val: state } = getProjectField(project, "State")
 
@@ -322,7 +324,6 @@ const Voting = ({ address, project }) => {
   }
 
   const isOwner = baseProjectInfo.owner === account
-  const open = voting.Result === voting.Result.None && Date.now().getTime() / 1000 < (voting.TimestampStart + voting.Property.Duration) && voting.TimestampStart !== 0
   return (
     <Item.Extra>
       <Button.Group>
@@ -357,7 +358,7 @@ const Voting = ({ address, project }) => {
         }
 
         <Button
-          disabled={!open || accountVote === 2}
+          disabled={!opened || accountVote === 2}
           basic
           primary
           content="Yes"
@@ -381,7 +382,7 @@ const Voting = ({ address, project }) => {
         />
         <Button.Or />
         <Button
-          disabled={!open || accountVote === 1}
+          disabled={!opened || accountVote === 1}
           basic
           secondary
           content="No"

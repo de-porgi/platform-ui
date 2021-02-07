@@ -125,14 +125,27 @@ export const getVoting = address => {
   }
 }
 
-export const getVote = (address, voter) => {
+export const isVotingOpened = address => {
+  const { data, error } = useSWR(
+    [address, "IsOpen"],
+    contractCaller(VotingABI)
+  )
+
+  return {
+    opened: data,
+    error: error,
+    loading: !error && !data
+  }
+}
+
+export const getAccountVote = (address, voter) => {
   const { data, error } = useSWR(
     [address, "Votes", voter],
     contractCaller(VotingABI)
   )
 
   return {
-    voting: data,
+    accountVote: data,
     error: error,
     loading: !error && !data
   }
