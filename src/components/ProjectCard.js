@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Image, Placeholder, Icon } from 'semantic-ui-react'
+import { Card, Image, Placeholder, Icon, Label } from 'semantic-ui-react'
 
 import { EthereumAddressType } from '../prop-types'
 import meshImg from '../../public/mesh_club.png'
@@ -7,12 +7,14 @@ import yevImg from '../../public/yevhen.png'
 import revImg from '../../public/re_vision.png'
 import aaveImg from '../../public/aave.png'
 import { Link } from 'react-router-dom'
-import { getProjectBaseInfo } from '../hooks'
+import { getProjectBaseInfo, getProjectField } from '../hooks'
+import { fromWei } from '../web3-utils'
 
-// TODO Add placeholder
 const ProjectCard = ({ address }) => {
   const { baseProjectInfo: project, loading } = getProjectBaseInfo(address)
-  
+  const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
+  const loading = pLoading || rLoading
+
   // Nasty Hack. Please remove ASAP.
   function getImage() {
     switch (project.name) {
@@ -69,7 +71,14 @@ const ProjectCard = ({ address }) => {
       </Card.Content>
       {!loading ? (
         <Card.Content extra>
-          <Icon name="ethereum" /> 100
+          <Label color="green" size="medium">
+            Price: {fromWei(project.price)}
+            <Icon name="ethereum" />
+          </Label>
+          <Label color="teal" size="medium">
+            Cap: {fromWei(raised)}
+            <Icon name="ethereum" />
+          </Label>
         </Card.Content>
       ) : (<></>)}
     </Card>

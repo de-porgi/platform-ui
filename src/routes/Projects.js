@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
   Card,
   Segment,
-  Container,
   Dropdown,
   Divider,
   Header,
@@ -33,7 +32,7 @@ const Projects = () => {
   const handleChange = (e, { value }) => setState(value)
 
   return (
-    <Segment as={Container} loading={loading} placeholder={loading}>
+    <Segment loading={loading} placeholder={loading}>
       <Dropdown
         text={`${projectStatesNames[state]}`}
         icon='filter'
