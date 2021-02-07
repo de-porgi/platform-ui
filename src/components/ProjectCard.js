@@ -11,7 +11,7 @@ import { getProjectBaseInfo, getProjectField } from '../hooks'
 import { fromWei } from '../web3-utils'
 
 const ProjectCard = ({ address }) => {
-  const { baseProjectInfo: project, loading } = getProjectBaseInfo(address)
+  const { baseProjectInfo: project, loading: pLoading } = getProjectBaseInfo(address)
   const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
   const loading = pLoading || rLoading
 
