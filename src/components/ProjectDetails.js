@@ -22,10 +22,11 @@ import {
   withdraw,
   startPresale,
   finishPresale,
-  invest
+  invest,
+  vote
 } from '../hooks'
 import { useWallet } from '../wallet'
-import { fromWei } from '../web3-utils'
+import { fromWei, isEmptyAddress } from '../web3-utils'
 import Season from './Season'
 import { projectStatesNames } from '../enum/projectState'
 import { secondsToDate } from '../utils'
@@ -74,10 +75,11 @@ const ProjectDetails = ({ address }) => {
           </Header.Subheader>
         </Header>
 
-
         <Statistic.Group widths="three">
           <Statistic>
-            <Statistic.Value>{baseProjectInfo.price && fromWei(baseProjectInfo.price)} ETH</Statistic.Value>
+            <Statistic.Value>
+              {baseProjectInfo.price && fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol.slice(0, 3)}/ETH
+            </Statistic.Value>
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -85,7 +87,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Raized </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.name.slice(0, 3)} </Statistic.Value>
+            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.symbol.slice(0, 3)} </Statistic.Value>
             <Statistic.Label> Current {baseProjectInfo.projectName} supply </Statistic.Label>
           </Statistic>
         </Statistic.Group>
@@ -138,9 +140,9 @@ const ProjectDetails = ({ address }) => {
         <Header as="h2">
           Presale
         </Header>
-        <Statistic.Group widths="four" size="small">
+        <Statistic.Group widths="four" size="mini">
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} ETH</Statistic.Value>
+            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} {baseProjectInfo.symbol.slice(0, 3)}/ETH</Statistic.Value>
             <Statistic.Label> Presale Token Price </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -188,31 +190,11 @@ const ProjectDetails = ({ address }) => {
 
 
 const Series = ({ series, i }) => {
-  const { web3, account } = useWallet()
-  const { voting, loading } = getVoting(web3, series.Vote)
-
-
-  if (loading) {
-    return (
-      <Placeholder fluid>
-        <Placeholder.Header image>
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Header>
-        <Placeholder.Paragraph>
-          <Placeholder.Line />
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Paragraph>
-      </Placeholder>
-    )
-  }
-
   return (
     <Item>
       <Item.Content>
         <Item.Header> Series {i + 1} </Item.Header>
-        <Item.Meta> Unlocks {series.StakeUnlock}% of investments </Item.Meta>
+        <Item.Meta> Unlocks {series.StakeUnlock}% of investments, {series.Duration} days </Item.Meta>
         <Item.Description>
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
           ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
@@ -223,16 +205,96 @@ const Series = ({ series, i }) => {
           Nullam dictum felis eu pede link mollis pretium. Integer tincidunt. Cras
           dapibus. Vivamus eslementum semper nisi.
          </Item.Description>
-
-        <Item.Extra>
-          <Button.Group>
-            <Button positive> Yes </Button>
-            <Button.Or />
-            <Button> No </Button>
-          </Button.Group>
-        </Item.Extra>
+        <Voting address={series.Vote} />
       </Item.Content>
     </Item>
+  )
+}
+
+const Voting = ({ address }) => {
+  if (isEmptyAddress(address)) {
+    return <></>
+  }
+
+  const { web3, account } = useWallet()
+  const { voting } = getVoting(address)
+
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  if (!voting || loading) {
+    return (
+      <Placeholder fluid>
+        <Placeholder.Header image>
+          <Placeholder.Line />
+          <Placeholder.Line />
+        </Placeholder.Header>
+      </Placeholder>
+    )
+  }
+
+  if (error) {
+    return (
+      <Message error
+        header="Failed to process action. Please retry!"
+        list={[error]}
+      />
+    )
+  }
+
+  const open = voting.Result === voting.Result.None && Date.now().getTime() / 1000 < (voting.TimestampStart + voting.Property.Duration) && voting.TimestampStart !== 0
+  return (
+    <Item.Extra>
+      <Button.Group>
+        <Button
+          disabled={!open}
+          basic
+          primary
+          content="Yes"
+          icon="thumbs up outline"
+          label={{
+            basic: true,
+            color: "blue",
+            pointing: "left",
+            content: voting.TotalYes,
+          }}
+          onClick={async () => {
+            setLoading(true)
+            try {
+              await vote(web3, address, 2)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+        <Button.Or />
+        <Button
+          disabled={!open}
+          basic
+          secondary
+          content="No"
+          icon="thumbs down outline"
+          label={{
+            basic: true,
+            color: "black",
+            pointing: "left",
+            content: voting.TotalNo,
+          }}
+          onClick={async () => {
+            setLoading(true)
+            try {
+              await vote(web3, address, 1)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+      </Button.Group>
+    </Item.Extra>
   )
 }
 

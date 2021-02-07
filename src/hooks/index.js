@@ -95,8 +95,8 @@ export const getProjectStatistic = address => {
 
 export const getVoting = address => {
   const { data, error } = useSWR(
-    [contractAddresses.porgi, "GetVotingInfo", address],
-    contractCaller(PorgiABI)
+    [address, "GetVotingInfo"],
+    contractCaller(VotingABI)
   )
 
   return {
