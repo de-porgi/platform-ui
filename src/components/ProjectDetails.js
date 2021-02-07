@@ -81,7 +81,7 @@ const ProjectDetails = ({ address }) => {
         <Statistic.Group widths="three">
           <Statistic>
             <Statistic.Value>
-              {baseProjectInfo.price && fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol.slice(0, 3)}/ETH
+              {baseProjectInfo.price && fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol}/ETH
             </Statistic.Value>
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
@@ -90,7 +90,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Raized </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.symbol.slice(0, 3)} </Statistic.Value>
+            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.symbol} </Statistic.Value>
             <Statistic.Label> Current {baseProjectInfo.projectName} supply </Statistic.Label>
           </Statistic>
         </Statistic.Group>
@@ -146,7 +146,7 @@ const ProjectDetails = ({ address }) => {
         </Header>
         <Statistic.Group widths="four" size="mini">
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} {baseProjectInfo.symbol.slice(0, 3)}/ETH</Statistic.Value>
+            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} {baseProjectInfo.symbol}/ETH</Statistic.Value>
             <Statistic.Label> Presale Token Price </Statistic.Label>
           </Statistic>
           <Statistic>
