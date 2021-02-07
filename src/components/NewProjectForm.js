@@ -4,9 +4,10 @@ import {
   Button,
   Header,
   Segment,
-  Icon
+  Message
 } from 'semantic-ui-react'
 
+import WalletWarning from './WalletWarning'
 import { useWallet } from '../wallet'
 import { newProject } from '../hooks'
 import { toWei } from 'web3-utils'
@@ -53,8 +54,29 @@ const NewProjectForm = () => {
   ])
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const onSubmit = async () => {
+    let fullStakeUnlock = 0
+    serieses.forEach(s => {
+      fullStakeUnlock += Number(s.StakeUnlock)
+    })
+
+    if (fullStakeUnlock < 100) {
+      alert("Error: Sum of Series Portion(%) less then 100%")
+      return
+    }
+
+    if (fullStakeUnlock > 100) {
+      alert("Error: Sum of Series Portion(%) bigger then 100%")
+      return
+    }
+
+    serieses.forEach(s => {
+      s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
+      s.Vote.Duration *= 24 * 60 * 60 // days to sec
+    })
+
     const project = {
       ProjectName: name.value,
       TokenName: token.value,
@@ -64,7 +86,7 @@ const NewProjectForm = () => {
         Presale: {
           TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
-          Duration: presaleDuration.value,
+          Duration: presaleDuration.value * 24 * 60 * 60, // days to sec
           MinCap: minCap.value
         },
         Series: serieses,
@@ -72,136 +94,157 @@ const NewProjectForm = () => {
     }
 
     setLoading(true)
-    await newProject(web3, project)
+    try {
+      await newProject(web3, project)
+    } catch (e) {
+      setLoading(false)
+      setError(e.message)
+      return
+    }
+
     history.push("/")
+  }
+
+  if (!web3) {
+    return <WalletWarning />
+  }
+
+  if (error) {
+    return (
+      <Message error
+        header="Failed to create new project. Please retry!"
+        list={[error]}
+      />
+    )
+  }
+
+  // TODO Loading have to be handled by upper component
+  if (loading) {
+    return <Segment placeholder loading />
   }
 
   return (
     <Form onSubmit={onSubmit}>
-      {!web3 || loading ? (
-        <Segment placeholder loading={loading}>
-          {!web3 ? (
-            <Header icon>
-              <Icon name="ethereum" />
-              Connect to your Ethereum wallet first!
-            </Header>
-          ) : <></>}
-
+      <Segment.Group>
+        <Segment>
+          <Header as="h3"> Configure Project Info </Header>
+          <Form.Field>
+            <label> Project Name </label>
+            <input
+              placeholder="e.g. Hate Google"
+              {...name}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Name </label>
+            <input
+              placeholder="e.g. Hate Facebook"
+              {...token}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Symbol </label>
+            <input
+              placeholder="e.g. Hate Apple"
+              {...symbol}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Token Decimals </label>
+            <input
+              type="number"
+              placeholder="42"
+              {...decimals}
+            />
+          </Form.Field>
         </Segment>
-      ) : (
-          <>
-            <Segment.Group>
-              <Segment>
-                <Header as="h3"> Configure Project Info </Header>
-                <Form.Field>
-                  <label> Project Name </label>
-                  <input
-                    placeholder="e.g. Hate Google"
-                    {...name}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Name </label>
-                  <input
-                    placeholder="e.g. Hate Facebook"
-                    {...token}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Symbol </label>
-                  <input
-                    placeholder="e.g. Hate Apple"
-                    {...symbol}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Token Decimals </label>
-                  <input
-                    type="number"
-                    placeholder="42"
-                    {...decimals}
-                  />
-                </Form.Field>
-              </Segment>
-              <Segment>
-                <Header as="h3"> Token Presale Parameters </Header>
-                <Form.Field>
-                  <label> Price(per ETH) </label>
-                  <input
-                    type="number"
-                    placeholder="1000"
-                    {...price}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Distribution for Project(%) </label>
-                  <input
-                    type="number"
-                    placeholder="30"
-                    {...distribution}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Duration(days) </label>
-                  <input
-                    type="number"
-                    placeholder="14"
-                    {...presaleDuration}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label> Minimal Required Capitalization </label>
-                  <input
-                    type="number"
-                    placeholder="100000"
-                    {...minCap}
-                  />
-                </Form.Field>
-              </Segment>
-              <Segment>
-                <Header as="h3"> Configure Initial Season </Header>
-                <Segment.Group>
-                  {serieses.map((series, i) => (
-                    <SeriesForm key={i} series={series} setSeries={series => {
-                      if (series) {
-                        setSerieses([
-                          ...serieses.slice(0, i),
-                          series,
-                          ...serieses.slice(i + 1)
-                        ])
-                      } else {
-                        setSerieses([
-                          ...serieses.slice(0, i),
-                          ...serieses.slice(i + 1)
-                        ])
-                      }
-                    }} />
-                  ))}
-                  <Segment textAlign="center">
-                    <Button type="button" circular icon="plus" color="green" onClick={() => setSerieses(serieses => [...serieses, { ...serieses[0] }])} />
-                  </Segment>
-                </Segment.Group>
-              </Segment>
-              <Segment>
-                <Form.Button fluid primary size="large">
-                  Submit
-                </Form.Button>
-              </Segment>
-            </Segment.Group>
-          </>
-        )}
+        <Segment>
+          <Header as="h3"> Token Presale Parameters </Header>
+          <Form.Field>
+            <label> Price(per ETH) </label>
+            <input
+              type="number"
+              placeholder="1000"
+              {...price}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Distribution for Project(%) </label>
+            <input
+              type="number"
+              placeholder="30"
+              {...distribution}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Duration(days) </label>
+            <input
+              type="number"
+              placeholder="14"
+              {...presaleDuration}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label> Minimal Required Capitalization </label>
+            <input
+              type="number"
+              placeholder="100000"
+              {...minCap}
+            />
+          </Form.Field>
+        </Segment>
+        <Segment>
+          <Header as="h3"> Configure Initial Season </Header>
+          <Segment.Group>
+            {serieses.map((series, i) => (
+              <SeriesForm key={i} number={i+1} series={series} setSeries={series => {
+                if (series) {
+                  setSerieses([
+                    ...serieses.slice(0, i),
+                    series,
+                    ...serieses.slice(i + 1)
+                  ])
+                } else {
+                  setSerieses([
+                    ...serieses.slice(0, i),
+                    ...serieses.slice(i + 1)
+                  ])
+                }
+              }} />
+            ))}
+            <Segment textAlign="center">
+              <Button type="button" circular icon="plus" color="green" onClick={() => setSerieses(serieses => [...serieses, { ...serieses[0] }])} />
+            </Segment>
+          </Segment.Group>
+        </Segment>
+        <Segment>
+          <Form.Button fluid primary size="large">
+            Submit
+            </Form.Button>
+        </Segment>
+      </Segment.Group>
     </Form>
   )
 }
 
-const SeriesForm = ({ series, setSeries }) => {
+const SeriesForm = ({ series, number, setSeries }) => {
   const onChange = (e, { name, value }) => setSeries({ ...series, [name]: value })
+  const onChangeVoteFilter = (e, { name, value }) => setSeries({
+    ...series,
+    Vote: {
+      ...series.Vote,
+      Filters: [{
+        ...series.Vote.Filters[0],
+        [name]: value
+      }]
+    }
+  })
 
   return (
     <Segment clearing>
-      <Header as="h4" floated="left"> Series </Header>
+      <Header as="h4" floated="left"> Series {number} </Header>
       <Button type="button" size="mini" color="red" circular icon="cancel" floated="right" onClick={() => setSeries()} />
-      <Form.Field>
+      <Form.Field required>
         <label> Duration(weeks) </label>
         <Form.Input
           type="number"
@@ -211,7 +254,7 @@ const SeriesForm = ({ series, setSeries }) => {
           onChange={onChange}
         />
       </Form.Field>
-      <Form.Field>
+      <Form.Field required>
         <label> Portion(%) </label>
         <Form.Input
           type="number"
@@ -221,16 +264,59 @@ const SeriesForm = ({ series, setSeries }) => {
           onChange={onChange}
         />
       </Form.Field>
-
-      {/* // TODO Add voting
-      <Form.Field>
-        <label> Portion(%) </label>
-        <input
+      <Form.Field required>
+        <label> Vote Duration(days) </label>
+        <Form.Input
           type="number"
-          placeholder="4"
-          {...portion}
+          name="VoteDuration"
+          placeholder={series.Vote.Duration}
+          value={series.Vote.Duration}
+          onChange={(e, { value }) => setSeries({
+              ...series,
+              Vote: {
+                ...series.Vote,
+                Duration: value
+              }
+            })
+          }
         />
-      </Form.Field> */}
+      </Form.Field>
+      <Form.Select
+        required
+        fluid
+        label='Vote Schema'
+        placeholder={series.Vote.Filters[0].Schema}
+        value={series.Vote.Filters[0].Schema}
+        name='Schema'
+        options={[
+          {
+            key: 1,
+            text: 'Percent of Absolute',
+            value: 1,
+          },
+          {
+            key: 2,
+            text: 'Percent of Participant',
+            value: 2,
+          },
+          {
+            key: 3,
+            text: 'Difference of Votes',
+            value: 4,
+          },
+        ]}
+        onChange={onChangeVoteFilter}
+      />
+      <Form.Field required>
+        <label> Vote Filter Value(%) </label>
+        <Form.Input
+          type="number"
+          name="Value"
+          placeholder={series.Vote.Filters[0].Value}
+          value={series.Vote.Filters[0].Value}
+          onChange={onChangeVoteFilter}
+        />
+      </Form.Field>
     </Segment>
   )
 }
