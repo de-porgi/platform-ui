@@ -29,7 +29,6 @@ export const projectInnerStatesNames = {
 }
 
 export const projectStates = {
-  None : "0",
   New: "1",
   Presale: "2",
   InProgress: "3",
@@ -38,7 +37,6 @@ export const projectStates = {
 }
 
 export const projectStatesNames = {
-  "0": "None",
   "1": "New",
   "2": "Presale",
   "3": "InProgress",
