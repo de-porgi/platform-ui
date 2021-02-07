@@ -1,14 +1,16 @@
 import React from 'react'
-import { Card, Image, Placeholder, Icon } from 'semantic-ui-react'
+import { Card, Image, Placeholder, Icon, Label } from 'semantic-ui-react'
 
 import { EthereumAddressType } from '../prop-types'
 import img from '../../public/anus.jpg'
 import { Link } from 'react-router-dom'
-import { getProjectBaseInfo } from '../hooks'
+import { getProjectBaseInfo, getProjectField } from '../hooks'
+import { fromWei } from '../web3-utils'
 
-// TODO Add placeholder
 const ProjectCard = ({ address }) => {
-  const { baseProjectInfo: project, loading } = getProjectBaseInfo(address)
+  const { baseProjectInfo: project, loading: pLoading } = getProjectBaseInfo(address)
+  const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
+  const loading = pLoading || rLoading
   return (
     <Card as={Link} to={`/project/${address}`}>
       {loading ? (
@@ -17,9 +19,7 @@ const ProjectCard = ({ address }) => {
         </Placeholder>
       ) : (
           <>
-            <Image src={img} wrapped label={{
-              corner: 'left',
-            }} />
+            <Image src={img} wrapped />
           </>
         )}
 
@@ -50,7 +50,14 @@ const ProjectCard = ({ address }) => {
       </Card.Content>
       {!loading ? (
         <Card.Content extra>
-          <Icon name="ethereum" /> 100
+          <Label color="green" size="medium">
+            Price: {fromWei(project.price)}
+            <Icon name="ethereum" />
+          </Label>
+          <Label color="teal" size="medium">
+            Cap: {fromWei(raised)}
+            <Icon name="ethereum" />
+          </Label>
         </Card.Content>
       ) : (<></>)}
     </Card>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Segment, Container } from 'semantic-ui-react'
+import { Card, Segment } from 'semantic-ui-react'
 
 import ProjectCard from '../components/ProjectCard'
 import { getProjects } from '../hooks'
@@ -8,7 +8,7 @@ const Projects = () => {
   const { projects, loading } = getProjects(1)
 
   return (
-    <Segment as={Container} loading={loading} placeholder={loading}>
+    <Segment loading={loading} placeholder={loading}>
       {!loading ? (
         <Card.Group itemsPerRow="4">
           {projects.map((address, i) => (

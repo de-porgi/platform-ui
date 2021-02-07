@@ -1,6 +1,6 @@
 import React from 'react'
 import { Main } from '@aragon/ui'
-import { Button, Segment, Menu } from 'semantic-ui-react'
+import { Button, Segment, Menu, Container } from 'semantic-ui-react'
 import { Spring, animated } from 'react-spring'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 
@@ -42,21 +42,23 @@ const App = () => {
                         Create Project
                       </Button>
                     </Menu.Item>
-                    {/* <Menu.Item>
+                    <Menu.Item>
                       <Link to="/account">
                         Account
                       </Link>
-                    </Menu.Item> */}
+                    </Menu.Item>
                   </Menu>
                   <AccountModule />
                 </Segment>
-                <Switch>
-                  <Route exact path="/" component={Landing} />
-                  <Route path="/projects" component={Projects} />
-                  <Route path="/new" component={NewProject} />
-                  <Route path="/account" component={Account} />
-                  <Route path="/project/:address" component={Project} />
-                </Switch>
+                <Container>
+                  <Switch>
+                    <Route exact path="/" component={Landing} />
+                    <Route path="/projects" component={Projects} />
+                    <Route path="/new" component={NewProject} />
+                    <Route path="/account" component={Account} />
+                    <Route path="/project/:address" component={Project} />
+                  </Switch>
+                </Container>
               </Main>
             </Router>
           </animated.div>
