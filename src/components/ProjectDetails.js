@@ -31,7 +31,7 @@ import {
 } from '../hooks'
 import { useWallet } from '../wallet'
 import { fromWei, toWei, isEmptyAddress } from '../web3-utils'
-import { projectStates, projectStatesNames } from '../enum/projectState'
+import { projectInnerStates, projectInnerStatesNames } from '../enum/projectState'
 import { secondsToDate } from '../utils'
 
 const ProjectDetails = ({ address }) => {
@@ -76,7 +76,7 @@ const ProjectDetails = ({ address }) => {
             {baseProjectInfo.projectName}
           </Header.Content>
           <Header.Subheader>
-            {state && projectStatesNames[state]}
+            {state && projectInnerStatesNames[state]}
           </Header.Subheader>
         </Header>
 
@@ -144,7 +144,7 @@ const ProjectDetails = ({ address }) => {
       <Segment>
         <Header as="h2">
           Presale
-          <Header.Subheader> {state === projectStates.PresaleInProgress && "Active"} </Header.Subheader>
+          <Header.Subheader> {state === projectInnerStates.PresaleInProgress && "Active"} </Header.Subheader>
         </Header>
         <Statistic.Group widths="four" size="mini">
           <Statistic>
@@ -164,7 +164,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token reserve for the project </Statistic.Label>
           </Statistic>
         </Statistic.Group>
-        {isOwner && state === projectStates.PresaleIsNotStarted &&
+        {isOwner && state === projectInnerStates.PresaleIsNotStarted &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {
@@ -179,7 +179,7 @@ const ProjectDetails = ({ address }) => {
           </Button>
         }
 
-        {isOwner && state === projectStates.PresaleFinishing &&
+        {isOwner && state === projectInnerStates.PresaleFinishing &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {
@@ -218,7 +218,7 @@ const ProjectDetails = ({ address }) => {
         />
       </Segment>
       <Segment>
-        {state === projectStates.PresaleInProgress &&
+        {state === projectInnerStates.PresaleInProgress &&
           <Form onSubmit={async () => {
             setLoading(true)
             try {
@@ -248,7 +248,7 @@ const ProjectDetails = ({ address }) => {
           </Form>
         }
 
-        {state === projectStates.ProjectCanceled &&
+        {state === projectInnerStates.ProjectCanceled &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {
@@ -328,7 +328,7 @@ const Voting = ({ address }) => {
   return (
     <Item.Extra>
       <Button.Group>
-        {isOwner && state === projectStates.SeriesFinishing &&
+        {isOwner && state === projectInnerStates.SeriesFinishing &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {
@@ -343,7 +343,7 @@ const Voting = ({ address }) => {
           </Button>
         }
 
-        {isOwner && state === projectStates.VotingFinishing &&
+        {isOwner && state === projectInnerStates.VotingFinishing &&
           <Button primary onClick={async () => {
             setLoading(true)
             try {

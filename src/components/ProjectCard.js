@@ -2,7 +2,10 @@ import React from 'react'
 import { Card, Image, Placeholder, Icon, Label } from 'semantic-ui-react'
 
 import { EthereumAddressType } from '../prop-types'
-import img from '../../public/anus.jpg'
+import meshImg from '../../public/mesh_club.png'
+import yevImg from '../../public/yevhen.png'
+import revImg from '../../public/re_vision.png'
+import aaveImg from '../../public/aave.png'
 import { Link } from 'react-router-dom'
 import { getProjectBaseInfo, getProjectField } from '../hooks'
 import { fromWei } from '../web3-utils'
@@ -11,6 +14,22 @@ const ProjectCard = ({ address }) => {
   const { baseProjectInfo: project, loading: pLoading } = getProjectBaseInfo(address)
   const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
   const loading = pLoading || rLoading
+
+  // Nasty Hack. Please remove ASAP.
+  function getImage() {
+    switch (project.name) {
+      case 'ReVision':
+        return revImg
+      case 'YevAnHen':
+        return yevImg
+      case 'AAVE':
+        return aaveImg
+      default:
+        return meshImg
+    }
+
+  }
+
   return (
     <Card as={Link} to={`/project/${address}`}>
       {loading ? (
@@ -19,7 +38,9 @@ const ProjectCard = ({ address }) => {
         </Placeholder>
       ) : (
           <>
-            <Image src={img} wrapped />
+            <Image src={getImage()} wrapped label={{
+              corner: 'left',
+            }} />
           </>
         )}
 

@@ -57,6 +57,26 @@ const NewProjectForm = () => {
   const [error, setError] = useState("")
 
   const onSubmit = async () => {
+    let fullStakeUnlock = 0
+    serieses.forEach(s => {
+      fullStakeUnlock += Number(s.StakeUnlock)
+    })
+
+    if (fullStakeUnlock < 100) {
+      alert("Error: Sum of Series Portion(%) less then 100%")
+      return
+    }
+
+    if (fullStakeUnlock > 100) {
+      alert("Error: Sum of Series Portion(%) bigger then 100%")
+      return
+    }
+
+    serieses.forEach(s => {
+      s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
+      s.Vote.Duration *= 24 * 60 * 60 // days to sec
+    })
+
     const project = {
       ProjectName: name.value,
       TokenName: token.value,
@@ -66,7 +86,7 @@ const NewProjectForm = () => {
         Presale: {
           TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
-          Duration: presaleDuration.value,
+          Duration: presaleDuration.value * 24 * 60 * 60, // days to sec
           MinCap: minCap.value
         },
         Series: serieses,
@@ -177,7 +197,7 @@ const NewProjectForm = () => {
           <Header as="h3"> Configure Initial Season </Header>
           <Segment.Group>
             {serieses.map((series, i) => (
-              <SeriesForm key={i} series={series} setSeries={series => {
+              <SeriesForm key={i} number={i+1} series={series} setSeries={series => {
                 if (series) {
                   setSerieses([
                     ...serieses.slice(0, i),
@@ -207,14 +227,24 @@ const NewProjectForm = () => {
   )
 }
 
-const SeriesForm = ({ series, setSeries }) => {
+const SeriesForm = ({ series, number, setSeries }) => {
   const onChange = (e, { name, value }) => setSeries({ ...series, [name]: value })
+  const onChangeVoteFilter = (e, { name, value }) => setSeries({
+    ...series,
+    Vote: {
+      ...series.Vote,
+      Filters: [{
+        ...series.Vote.Filters[0],
+        [name]: value
+      }]
+    }
+  })
 
   return (
     <Segment clearing>
-      <Header as="h4" floated="left"> Series </Header>
+      <Header as="h4" floated="left"> Series {number} </Header>
       <Button type="button" size="mini" color="red" circular icon="cancel" floated="right" onClick={() => setSeries()} />
-      <Form.Field>
+      <Form.Field required>
         <label> Duration(weeks) </label>
         <Form.Input
           type="number"
@@ -224,7 +254,7 @@ const SeriesForm = ({ series, setSeries }) => {
           onChange={onChange}
         />
       </Form.Field>
-      <Form.Field>
+      <Form.Field required>
         <label> Portion(%) </label>
         <Form.Input
           type="number"
@@ -234,16 +264,59 @@ const SeriesForm = ({ series, setSeries }) => {
           onChange={onChange}
         />
       </Form.Field>
-
-      {/* // TODO Add voting
-      <Form.Field>
-        <label> Portion(%) </label>
-        <input
+      <Form.Field required>
+        <label> Vote Duration(days) </label>
+        <Form.Input
           type="number"
-          placeholder="4"
-          {...portion}
+          name="VoteDuration"
+          placeholder={series.Vote.Duration}
+          value={series.Vote.Duration}
+          onChange={(e, { value }) => setSeries({
+              ...series,
+              Vote: {
+                ...series.Vote,
+                Duration: value
+              }
+            })
+          }
         />
-      </Form.Field> */}
+      </Form.Field>
+      <Form.Select
+        required
+        fluid
+        label='Vote Schema'
+        placeholder={series.Vote.Filters[0].Schema}
+        value={series.Vote.Filters[0].Schema}
+        name='Schema'
+        options={[
+          {
+            key: 1,
+            text: 'Percent of Absolute',
+            value: 1,
+          },
+          {
+            key: 2,
+            text: 'Percent of Participant',
+            value: 2,
+          },
+          {
+            key: 3,
+            text: 'Difference of Votes',
+            value: 4,
+          },
+        ]}
+        onChange={onChangeVoteFilter}
+      />
+      <Form.Field required>
+        <label> Vote Filter Value(%) </label>
+        <Form.Input
+          type="number"
+          name="Value"
+          placeholder={series.Vote.Filters[0].Value}
+          value={series.Vote.Filters[0].Value}
+          onChange={onChangeVoteFilter}
+        />
+      </Form.Field>
     </Segment>
   )
 }
