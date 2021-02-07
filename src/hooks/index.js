@@ -4,6 +4,7 @@ import PorgiABI from '../abi/porgi'
 import ProjectABI from '../abi/project'
 import VotingABI from '../abi/voting'
 import { getMainAccount, getWeb3 } from '../web3-utils'
+import { useState } from 'react'
 
 export const getProjects = state => {
   const { data, error } = useSWR(
@@ -110,11 +111,11 @@ export const invest = (web3, address, amount) => contractSender(web3, ProjectABI
 export const newProject = (web3, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', '0', props)
 export const startPresale = (web3, project) => contractSender(web3, ProjectABI)(project, 'StartPresale', '0')
 export const finishPresale = (web3, project) => contractSender(web3, ProjectABI)(project, 'FinishPresale', '0')
+export const addNextSeasons = (web3, project, season) => contractSender(web3, ProjectABI)(project, 'AddNextSeasons', '0', season)
 export const withdraw = (web3, project) => contractSender(web3, ProjectABI)(project, 'WithdrawETH', '0')
 export const vote = (web3, voting, vote) => contractSender(web3, VotingABI)(voting, 'Vote', '0', vote)
 export const startVoting = (web3, voting) => contractSender(web3, VotingABI)(voting, 'Start', '0')
 export const finishVoting = (web3, voting) => contractSender(web3, VotingABI)(voting, 'Finish', '0')
-
 
 const contractCaller = abi => (...args) => {
   const [address, meth, ...params] = args
@@ -125,7 +126,24 @@ const contractCaller = abi => (...args) => {
 
 const contractSender = (web3, abi) => async (...args) => {
   const [address, meth, amount, ...params] = args
+  console.log(abi)
   const contract = new web3.eth.Contract(abi, address)
   const from = await getMainAccount(web3)
   return contract.methods[meth](...params).send({ from: from, value: amount })
 }
+
+export const useInput = init => {
+  const [value, setValue] = useState(init);
+
+  return {
+    setValue,
+    reset: () => setValue(""),
+    input: {
+      value,
+      onChange: e => {
+        e.preventDefault()
+        setValue(e.target.value);
+      }
+    }
+  };
+};

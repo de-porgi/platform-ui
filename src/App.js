@@ -11,6 +11,7 @@ import Projects from './routes/Projects'
 import NewProject from './routes/NewProject'
 import Account from './routes/Account'
 import Project from './routes/Project'
+import { NewProjectSeason } from './routes/NewProjectSeason'
 
 const Router = BrowserRouter
 
@@ -56,7 +57,12 @@ const App = () => {
                     <Route path="/projects" component={Projects} />
                     <Route path="/new" component={NewProject} />
                     <Route path="/account" component={Account} />
-                    <Route path="/project/:address" component={Project} />
+                    <Route path="/project/:address">
+                      <Switch>
+                        <Route exact path="/project/:address/new_season" component={NewProjectSeason} />
+                        <Route exact path="/project/:address" component={Project} />
+                      </Switch>
+                    </Route>
                   </Switch>
                 </Container>
               </Main>
