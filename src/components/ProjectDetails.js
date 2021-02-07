@@ -78,14 +78,15 @@ const ProjectDetails = ({ address }) => {
             {state && projectInnerStatesNames[state]}
           </Header.Subheader>
         </Header>
-
-        <Statistic.Group widths="three">
+        <Statistic.Group widths="one">
           <Statistic>
             <Statistic.Value>
-              {baseProjectInfo.price && fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol}/ETH
+              {fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol}/ETH
             </Statistic.Value>
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
+        </Statistic.Group>
+        <Statistic.Group widths="three">
           <Statistic>
             <Statistic.Value>{fromWei(balance)} ETH </Statistic.Value>
             <Statistic.Label> Raized </Statistic.Label>
@@ -367,7 +368,7 @@ const Voting = ({ address, project }) => {
             basic: true,
             color: "blue",
             pointing: "left",
-            content: voting.TotalYes,
+            content: `${fromWei(voting.TotalNo)} ${baseProjectInfo.symbol}`,
           }}
           onClick={async () => {
             setLoading(true)
@@ -391,7 +392,7 @@ const Voting = ({ address, project }) => {
             basic: true,
             color: "black",
             pointing: "left",
-            content: voting.TotalNo,
+            content: `${fromWei(voting.TotalNo)} ${baseProjectInfo.symbol}`,
           }}
           onClick={async () => {
             setLoading(true)
