@@ -49,11 +49,6 @@ const ProjectDetails = ({ address }) => {
   const [loading, setLoading] = useState(false)
   const [etherCount, setWeiCount] = useState("1")
 
-  // TODO Loading have to be handled by totalSupplyupper component
-  if (!firstSeason || !statistic || !baseProjectInfo || !creationBlock || !totalSupply || !state || loading) {
-    return <Segment placeholder loading />
-  }
-
   if (error) {
     return (
       <Message error
@@ -61,6 +56,11 @@ const ProjectDetails = ({ address }) => {
         list={[error]}
       />
     )
+  }
+
+  // TODO Loading have to be handled by totalSupplyupper component
+  if (!firstSeason || !statistic || !baseProjectInfo || !creationBlock || !totalSupply || !state || loading) {
+    return <Segment placeholder loading />
   }
 
   const creationDate = statistic && secondsToDate(statistic.TimeCreated)
