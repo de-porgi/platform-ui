@@ -146,7 +146,7 @@ const ProjectDetails = ({ address }) => {
       <Segment textAlign="center">
         <Header as="h2">
           Presale
-          <Label color='teal' pointing='left'>{state === projectInnerStates.PresaleInProgress && "Active"}</Label>
+          {state === projectInnerStates.PresaleInProgress && <Label color='teal' pointing='left'> Active </Label>}
         </Header>
         <Statistic.Group widths="four" size="mini">
           <Statistic>
@@ -166,6 +166,7 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token reserve for the project </Statistic.Label>
           </Statistic>
         </Statistic.Group>
+        <Divider />
         {isOwner && state === projectInnerStates.PresaleIsNotStarted &&
           <Button primary fluid onClick={async () => {
             setLoading(true)
@@ -325,6 +326,7 @@ const Voting = ({ address, project }) => {
     )
   }
 
+  console.log(voting)
   const isOwner = baseProjectInfo.owner === account
   return (
     <Item.Extra>
