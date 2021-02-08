@@ -286,7 +286,7 @@ const SeriesForm = ({ series, number, setSeries }) => {
         required
         fluid
         label='Vote Schema'
-        placeholder={series.Vote.Filters[0].Schema}
+        placeholder={series.Vote.Filters[0].Schema.toString()}
         value={series.Vote.Filters[0].Schema}
         name='Schema'
         options={[
