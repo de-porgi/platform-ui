@@ -2,7 +2,7 @@ import React from 'react'
 import { Main } from '@aragon/ui'
 import { Button, Segment, Menu, Container } from 'semantic-ui-react'
 import { Spring, animated } from 'react-spring'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link, HashRouter } from 'react-router-dom'
 
 import Logo from './components/Logo'
 import AccountModule from './components/AccountModule/AccountModule'
@@ -13,7 +13,7 @@ import Account from './routes/Account'
 import Project from './routes/Project'
 import { NewProjectSeason } from './routes/NewProjectSeason'
 
-const Router = BrowserRouter
+const Router = process.env.IPFS === 'True' ? HashRouter : BrowserRouter
 
 const App = () => {
   return (
