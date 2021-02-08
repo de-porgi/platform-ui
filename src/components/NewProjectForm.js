@@ -9,7 +9,7 @@ import {
 
 import WalletWarning from './WalletWarning'
 import { useWallet } from '../wallet'
-import { newProject } from '../hooks'
+import { newProject, useInput } from '../hooks'
 import { toWei } from 'web3-utils'
 import { useHistory } from 'react-router-dom'
 
@@ -20,7 +20,7 @@ const NewProjectForm = () => {
 
   const { input: name } = useInput("Hate Google")
   const { input: token } = useInput("Hate Google")
-  const { input: symbol } = useInput("Hate Google")
+  const { input: symbol } = useInput("TKN")
 
   const { input: decimals } = useInput(18)
   const { input: price } = useInput("1")
@@ -146,6 +146,7 @@ const NewProjectForm = () => {
             <label> Token Symbol </label>
             <input
               placeholder="e.g. Hate Apple"
+              maxLength="4"
               {...symbol}
             />
           </Form.Field>
@@ -285,7 +286,7 @@ const SeriesForm = ({ series, number, setSeries }) => {
         required
         fluid
         label='Vote Schema'
-        placeholder={series.Vote.Filters[0].Schema}
+        placeholder={series.Vote.Filters[0].Schema.toString()}
         value={series.Vote.Filters[0].Schema}
         name='Schema'
         options={[
@@ -320,21 +321,5 @@ const SeriesForm = ({ series, number, setSeries }) => {
     </Segment>
   )
 }
-
-const useInput = init => {
-  const [value, setValue] = useState(init);
-
-  return {
-    setValue,
-    reset: () => setValue(""),
-    input: {
-      value,
-      onChange: e => {
-        e.preventDefault()
-        setValue(e.target.value);
-      }
-    }
-  };
-};
 
 export default NewProjectForm
