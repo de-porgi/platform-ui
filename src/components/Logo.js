@@ -10,7 +10,7 @@ export default () => (
   <Header size="huge" floated="left" color="blue">
     <Icon name="product hunt" />
     <UnpaddedHeaderContent>
-      ORGI Fundrising
+      ORGI Fundraising
     </UnpaddedHeaderContent>
   </Header>
 )
