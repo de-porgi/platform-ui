@@ -10,35 +10,46 @@ import {
   Tab,
   Item,
   Button,
-  Placeholder
+  Placeholder,
+  Form,
+  Label
 } from 'semantic-ui-react'
 import {
   getProjectBaseInfo,
   getProjectField,
   getProjectStatistic,
+  getProjectBalance,
   getSeasons,
   getVoting,
+  withdraw,
+  startPresale,
+  finishPresale,
+  invest,
+  startVoting,
+  finishVoting,
+  vote,
+  getAccountVote,
+  isVotingOpened
 } from '../hooks'
 import { useWallet } from '../wallet'
-import { fromWei, toWei } from '../web3-utils'
-import { projectStatesNames } from '../enum/projectState'
+import { fromWei, toWei, isEmptyAddress } from '../web3-utils'
+import { projectInnerStates, projectInnerStatesNames } from '../enum/projectState'
 import { secondsToDate } from '../utils'
 
 const ProjectDetails = ({ address }) => {
-  const { baseProjectInfo, infoLoading } = getProjectBaseInfo(address)
-  const { statistic, statLoading } = getProjectStatistic(address)
-  const { firstSeason, nextSeasons } = getSeasons(address)
+  const { web3, account } = useWallet()
+  const { baseProjectInfo } = getProjectBaseInfo(address)
+  const { statistic } = getProjectStatistic(address)
+  const { firstSeason } = getSeasons(address)
 
-  const { val: raised, loading: rLoading } = getProjectField(address, 'GetETHBalance')
-  const { val: creationBlock, loading: cbLoading } = getProjectField(address, "creationBlock")
-  const { val: totalSupply, loading: tsLoading } = getProjectField(address, "totalSupply")
-  const { val: state, loading: sLoading } = getProjectField(address, "State")
+  const { val: creationBlock } = getProjectField(address, "creationBlock")
+  const { val: totalSupply } = getProjectField(address, "totalSupply")
+  const { val: state } = getProjectField(address, "State")
+  const balance = getProjectBalance(address)
 
   const [error, setError] = useState("")
-  const [callLoading, setLoading] = useState(false)
-
-  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
-  const loading = infoLoading || callLoading || statLoading || rLoading || cbLoading || tsLoading || sLoading
+  const [loading, setLoading] = useState(false)
+  const [etherCount, setWeiCount] = useState("1")
 
   if (error) {
     return (
@@ -49,11 +60,13 @@ const ProjectDetails = ({ address }) => {
     )
   }
 
-  // TODO Loading have to be handled by upper component
-  if (loading) {
+  // TODO Loading have to be handled by totalSupplyupper component
+  if (!firstSeason || !statistic || !baseProjectInfo || !creationBlock || !totalSupply || !state || loading) {
     return <Segment placeholder loading />
   }
 
+  const creationDate = statistic && secondsToDate(statistic.TimeCreated)
+  const isOwner = baseProjectInfo.owner === account
   return (
     <Segment.Group>
       <Segment>
@@ -63,29 +76,32 @@ const ProjectDetails = ({ address }) => {
             {baseProjectInfo.projectName}
           </Header.Content>
           <Header.Subheader>
-            {state && projectStatesNames[state]}
+            {state && projectInnerStatesNames[state]}
           </Header.Subheader>
         </Header>
-
-
-        <Statistic.Group widths="three">
+        <Statistic.Group widths="one">
           <Statistic>
-            <Statistic.Value>{baseProjectInfo.price && fromWei(baseProjectInfo.price)} ETH</Statistic.Value>
+            <Statistic.Value>
+              {fromWei(baseProjectInfo.price)} {baseProjectInfo.symbol}/ETH
+            </Statistic.Value>
             <Statistic.Label> Token price </Statistic.Label>
           </Statistic>
+        </Statistic.Group>
+        <Divider />
+        <Statistic.Group widths="three">
           <Statistic>
-            <Statistic.Value>{raised && fromWei(raised)} ETH </Statistic.Value>
+            <Statistic.Value>{fromWei(balance)} ETH </Statistic.Value>
             <Statistic.Label> Raized </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.name.slice(0, 3)} </Statistic.Value>
+            <Statistic.Value>{totalSupply && fromWei(totalSupply)} {baseProjectInfo.symbol} </Statistic.Value>
             <Statistic.Label> Current {baseProjectInfo.projectName} supply </Statistic.Label>
           </Statistic>
         </Statistic.Group>
         <Divider />
         <Statistic.Group widths="two">
           <Statistic>
-            <Statistic.Value>{creationBlock} </Statistic.Value>
+            <Statistic.Value> {creationBlock} </Statistic.Value>
             <Statistic.Label> Created On Block </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -127,21 +143,22 @@ const ProjectDetails = ({ address }) => {
         </p>
         </Container>
       </Segment>
-      <Segment>
+      <Segment textAlign="center">
         <Header as="h2">
           Presale
+          <Label color='teal' pointing='left'>{state === projectInnerStates.PresaleInProgress && "Active"}</Label>
         </Header>
-        <Statistic.Group widths="four" size="small">
+        <Statistic.Group widths="four" size="mini">
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} ETH</Statistic.Value>
+            <Statistic.Value> {firstSeason.Presale.Price && fromWei(firstSeason.Presale.Price)} {baseProjectInfo.symbol}/ETH</Statistic.Value>
             <Statistic.Label> Presale Token Price </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.MinCap && firstSeason.Presale.MinCap} ETH </Statistic.Value>
+            <Statistic.Value> {firstSeason.Presale.MinCap && fromWei(firstSeason.Presale.MinCap)} ETH </Statistic.Value>
             <Statistic.Label> Presale Soft Cap </Statistic.Label>
           </Statistic>
           <Statistic>
-            <Statistic.Value> {firstSeason.Presale.Duration} </Statistic.Value>
+            <Statistic.Value> {Math.floor(firstSeason.Presale.Duration / (3600 * 24))} days</Statistic.Value>
             <Statistic.Label> Presale Duration </Statistic.Label>
           </Statistic>
           <Statistic>
@@ -149,6 +166,35 @@ const ProjectDetails = ({ address }) => {
             <Statistic.Label> Token reserve for the project </Statistic.Label>
           </Statistic>
         </Statistic.Group>
+        {isOwner && state === projectInnerStates.PresaleIsNotStarted &&
+          <Button primary fluid onClick={async () => {
+            setLoading(true)
+            try {
+              await startPresale(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Start Presale
+          </Button>
+        }
+
+        {isOwner && state === projectInnerStates.PresaleFinishing &&
+          <Button negative fluid onClick={async () => {
+            setLoading(true)
+            try {
+              await finishPresale(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Finish Presale
+          </Button>
+        }
       </Segment>
       <Segment>
         <Tab
@@ -160,7 +206,7 @@ const ProjectDetails = ({ address }) => {
                 return (
                   <Item.Group relaxed divided>
                     {firstSeason.Series.map((series, i) => {
-                      return <Series key={i} series={series} i={i} />
+                      return <Series key={i} project={address} series={series} i={i} />
                     })}
                   </Item.Group>
                 )
@@ -173,39 +219,61 @@ const ProjectDetails = ({ address }) => {
           ]}
         />
       </Segment>
+      <Segment>
+        {state === projectInnerStates.PresaleInProgress &&
+          <Form onSubmit={async () => {
+            setLoading(true)
+            try {
+              await invest(web3, address, toWei(etherCount))
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            <Form.Field required>
+              <label> Ether Count </label>
+              <Form.Input
+                placeholder='Ether Count'
+                name='ether'
+                type='number'
+                value={etherCount}
+                onChange={(e, { value }) => setWeiCount(value)}
+              />
+              <Form.Button
+                content='Invest'
+                fluid
+                positive
+              />
+            </Form.Field>
+          </Form>
+        }
 
-
+        {state === projectInnerStates.ProjectCanceled &&
+          <Button fluid primary onClick={async () => {
+            setLoading(true)
+            try {
+              await withdraw(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Withdraw Funds
+        </Button>}
+      </Segment>
     </Segment.Group>
   )
 }
 
 
-const Series = ({ series, i }) => {
-  const { web3, account } = useWallet()
-  const { voting, loading } = getVoting(web3, series.Vote)
-
-
-  if (loading) {
-    return (
-      <Placeholder fluid>
-        <Placeholder.Header image>
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Header>
-        <Placeholder.Paragraph>
-          <Placeholder.Line />
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Paragraph>
-      </Placeholder>
-    )
-  }
-
+const Series = ({ series, i, project }) => {
   return (
     <Item>
       <Item.Content>
         <Item.Header> Series {i + 1} </Item.Header>
-        <Item.Meta> Unlocks {series.StakeUnlock}% of investments </Item.Meta>
+        <Item.Meta> Unlocks {series.StakeUnlock}% of investments for the project once started for {Math.floor(series.Duration / (3600 * 24))} days. </Item.Meta>
         <Item.Description>
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
           ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
@@ -216,16 +284,130 @@ const Series = ({ series, i }) => {
           Nullam dictum felis eu pede link mollis pretium. Integer tincidunt. Cras
           dapibus. Vivamus eslementum semper nisi.
          </Item.Description>
-
-        <Item.Extra>
-          <Button.Group>
-            <Button positive> Yes </Button>
-            <Button.Or />
-            <Button> No </Button>
-          </Button.Group>
-        </Item.Extra>
+        <Voting project={project} address={series.Vote} />
       </Item.Content>
     </Item>
+  )
+}
+
+const Voting = ({ address, project }) => {
+  if (isEmptyAddress(address)) {
+    return <></>
+  }
+
+  const { web3, account } = useWallet()
+  const { voting } = getVoting(address)
+  const { accountVote } = getAccountVote(address, account)
+  const { opened } = isVotingOpened(address)
+  const { baseProjectInfo } = getProjectBaseInfo(project)
+  const { val: state } = getProjectField(project, "State")
+
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  if (!voting || !baseProjectInfo || !state || loading) {
+    return (
+      <Placeholder fluid>
+        <Placeholder.Header image>
+          <Placeholder.Line />
+          <Placeholder.Line />
+        </Placeholder.Header>
+      </Placeholder>
+    )
+  }
+
+  if (error) {
+    return (
+      <Message error
+        header="Failed to process action. Please retry!"
+        list={[error]}
+      />
+    )
+  }
+
+  const isOwner = baseProjectInfo.owner === account
+  return (
+    <Item.Extra>
+      <Button.Group>
+        {isOwner && state === projectInnerStates.SeriesFinishing &&
+          <Button primary fluid onClick={async () => {
+            setLoading(true)
+            try {
+              await startVoting(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Start Voting
+          </Button>
+        }
+
+        {isOwner && state === projectInnerStates.VotingFinishing &&
+          <Button primary fluid onClick={async () => {
+            setLoading(true)
+            try {
+              await finishVoting(web3, address)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}>
+            Finish Voting
+          </Button>
+        }
+
+        <Button
+          disabled={!opened || accountVote === "2"}
+          basic={accountVote !== "2"}
+          primary
+          content="Yes"
+          icon="thumbs up outline"
+          label={{
+            basic: true,
+            color: "blue",
+            pointing: "left",
+            content: `${fromWei(voting.TotalYes)} ${baseProjectInfo.symbol}`,
+          }}
+          onClick={async () => {
+            setLoading(true)
+            try {
+              await vote(web3, address, 2)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+        <Button.Or />
+        <Button
+          disabled={!opened || accountVote === "1"}
+          basic={accountVote !== "1"}
+          secondary
+          content="No"
+          icon="thumbs down outline"
+          label={{
+            basic: true,
+            color: "black",
+            pointing: "left",
+            content: `${fromWei(voting.TotalNo)} ${baseProjectInfo.symbol}`,
+          }}
+          onClick={async () => {
+            setLoading(true)
+            try {
+              await vote(web3, address, 1)
+            } catch (e) {
+              setError(e.message)
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+      </Button.Group>
+    </Item.Extra>
   )
 }
 

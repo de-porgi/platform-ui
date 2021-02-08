@@ -1,9 +1,11 @@
 import useSWR from 'swr'
+import BN from 'bn.js'
 import { contractAddresses, defaultConfig } from '../environment'
 import PorgiABI from '../abi/porgi'
 import ProjectABI from '../abi/project'
 import VotingABI from '../abi/voting'
-import { getMainAccount, getWeb3 } from '../web3-utils'
+import { getMainAccount, getWeb3, filterBalanceValue } from '../web3-utils'
+import { projectInnerStates } from '../enum/projectState'
 import { useState } from 'react'
 
 export const getProjects = state => {
@@ -52,8 +54,11 @@ export const getProjectField = (address, field, ...args) => {
     contractCaller(ProjectABI)
   )
 
+  if (error) {
+    console.log(error)
+  }
   return {
-    val: data || (!error && "Loading...") || "Error",
+    val: data,
     error: error,
     loading: !error && !data
   }
@@ -94,10 +99,24 @@ export const getProjectStatistic = address => {
   }
 }
 
+export const getProjectBalance = address => {
+  const wethbalacne = useSWR(
+    [address, "GetETHBalance"],
+    contractCaller(ProjectABI)
+  ).data
+  const balance = useSWR(
+    [address],
+    ethCaller()
+  ).data
+  let balanceBN = new BN(filterBalanceValue(wethbalacne))
+  balanceBN = balanceBN.add(new BN(filterBalanceValue(balance)))
+  return balanceBN
+}
+
 export const getVoting = address => {
   const { data, error } = useSWR(
-    [contractAddresses.porgi, "GetVotingInfo", address],
-    contractCaller(PorgiABI)
+    [address, "GetVotingInfo"],
+    contractCaller(VotingABI)
   )
 
   return {
@@ -107,7 +126,40 @@ export const getVoting = address => {
   }
 }
 
-export const invest = (web3, address, amount) => contractSender(web3, ProjectABI)(address, 'Invest', amount)
+export const isVotingOpened = address => {
+  const { data, error } = useSWR(
+    [address, "IsOpen"],
+    contractCaller(VotingABI)
+  )
+
+  return {
+    opened: data,
+    error: error,
+    loading: !error && !data
+  }
+}
+
+export const getAccountVote = (address, voter) => {
+  const { data, error } = useSWR(
+    [address, "Votes", voter],
+    contractCaller(VotingABI)
+  )
+
+  return {
+    accountVote: data,
+    error: error,
+    loading: !error && !data
+  }
+}
+
+export const invest = async (web3, address, amount) => {
+  const state = await contractCaller(ProjectABI)(address, 'State')
+  if (state !== projectInnerStates.PresaleInProgress) {
+    return new Error("Contract is not in PresaleInProgress state anymore")
+  }
+
+  return contractSender(web3, ProjectABI)(address, 'Invest', amount)
+}
 export const newProject = (web3, props) => contractSender(web3, PorgiABI)(contractAddresses.porgi, 'AddProject', '0', props)
 export const startPresale = (web3, project) => contractSender(web3, ProjectABI)(project, 'StartPresale', '0')
 export const finishPresale = (web3, project) => contractSender(web3, ProjectABI)(project, 'FinishPresale', '0')
@@ -122,6 +174,13 @@ const contractCaller = abi => (...args) => {
   const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
   const contract = new web3.eth.Contract(abi, address)
   return contract.methods[meth](...params).call()
+}
+
+const ethCaller = () => (...args) => {
+  const [address] = args
+  const web3 = getWeb3(window.ethereum || defaultConfig.web3Provider)
+  const eth = web3.eth;
+  return eth.getBalance(address);
 }
 
 const contractSender = (web3, abi) => async (...args) => {
