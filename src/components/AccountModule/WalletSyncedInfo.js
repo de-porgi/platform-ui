@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
-import { network } from '../../environment'
+import { defaultConfig } from '../../environment'
 import {
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
@@ -76,7 +76,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
     return (
       <span>
         Your wallet may not accurately reflect the current state of Ethereum's{' '}
-        {network.name}. Please contact your wallet for support if this issue
+        {defaultConfig.networkName}. Please contact your wallet for support if this issue
         persists.
       </span>
     )
@@ -85,7 +85,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
   if (connectionStatus === STATUS_MAJOR_NETWORK_SLOWDOWN) {
     return (
       <span>
-        The Ethereum {network.name} may be experiencing a global slowdown.
+        The Ethereum {defaultConfig.networkName} may be experiencing a global slowdown.
         Please avoid signing any transactions until this error is resolved.
       </span>
     )
