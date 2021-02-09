@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 
 const infuraProjectId = 'b5c50e71123d4e36a3e63b4b226a7e09' // TODO: should we hide that?
-const infuraAPI = 'wss://mainnet.infura.io/ws/v3/' + infuraProjectId
+const infuraAPI = 'wss://kovan.infura.io/ws/v3/' + infuraProjectId
 
 export const contractAddresses = {
   aave: '0xf8aC10E65F2073460aAD5f28E1EABE807DC287CF',
