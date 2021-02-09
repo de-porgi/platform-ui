@@ -18,9 +18,9 @@ const NewProjectForm = () => {
   const { web3 } = useWallet()
   const history = useHistory()
 
-  const { input: name } = useInput("Hate Google")
-  const { input: token } = useInput("Hate Google")
-  const { input: symbol } = useInput("TKN")
+  const { input: name } = useInput("PORGI")
+  const { input: token } = useInput("PORGI TKN")
+  const { input: symbol } = useInput("PRG")
 
   const { input: decimals } = useInput(18)
   const { input: price } = useInput("1")
@@ -72,10 +72,10 @@ const NewProjectForm = () => {
       return
     }
 
-    serieses.forEach(s => {
-      s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
-      s.Vote.Duration *= 24 * 60 * 60 // days to sec
-    })
+    // serieses.forEach(s => {
+    //   s.Duration *= 7 * 24 * 60 * 60 // weeks to sec
+    //   s.Vote.Duration *= 24 * 60 * 60 // days to sec
+    // })
 
     const project = {
       ProjectName: name.value,
@@ -86,7 +86,7 @@ const NewProjectForm = () => {
         Presale: {
           TokenPrice: toWei(price.value),
           OwnerTokensPercent: distribution.value,
-          Duration: presaleDuration.value * 24 * 60 * 60, // days to sec
+          Duration: presaleDuration.value, // * 24 * 60 * 60, // days to sec
           MinCap: minCap.value
         },
         Series: serieses,
@@ -198,7 +198,7 @@ const NewProjectForm = () => {
           <Header as="h3"> Configure Initial Season </Header>
           <Segment.Group>
             {serieses.map((series, i) => (
-              <SeriesForm key={i} number={i+1} series={series} setSeries={series => {
+              <SeriesForm key={i} number={i + 1} series={series} setSeries={series => {
                 if (series) {
                   setSerieses([
                     ...serieses.slice(0, i),
@@ -273,12 +273,12 @@ const SeriesForm = ({ series, number, setSeries }) => {
           placeholder={series.Vote.Duration}
           value={series.Vote.Duration}
           onChange={(e, { value }) => setSeries({
-              ...series,
-              Vote: {
-                ...series.Vote,
-                Duration: value
-              }
-            })
+            ...series,
+            Vote: {
+              ...series.Vote,
+              Duration: value
+            }
+          })
           }
         />
       </Form.Field>
